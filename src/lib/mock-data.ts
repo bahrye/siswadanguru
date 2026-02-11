@@ -5,17 +5,7 @@ export const mockSchools: School[] = [
 ];
 
 export const mockStudents: Student[] = [
-    // School 1
-  { id: 's1', name: 'Budi Santoso', class: '12-A', dateOfBirth: '2006-05-15', schoolId: '1' },
-  { id: 's2', name: 'Citra Lestari', class: '11-B', dateOfBirth: '2007-08-22', schoolId: '1' },
-  { id: 's3', name: 'Dewi Anggraini', class: '10-C', dateOfBirth: '2008-11-30', schoolId: '1' },
-
-  // School 2
-  { id: 's4', name: 'Eko Prasetyo', class: '12-TKJ', dateOfBirth: '2006-02-10', schoolId: '2' },
-  { id: 's5', name: 'Fitriani', class: '11-AK', dateOfBirth: '2007-07-18', schoolId: '2' },
-
-  // School 3
-  { id: 's6', name: 'Gilang Ramadhan', class: '11-IPA', dateOfBirth: '2007-01-05', schoolId: '3' },
+  // Data siswa sekarang diambil dari Firestore
 ];
 
 export const mockTeachers: Teacher[] = [

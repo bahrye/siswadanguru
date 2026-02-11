@@ -4,6 +4,7 @@ import type { Student } from "@/lib/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal, ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,18 +29,37 @@ export const columns: ColumnDef<Student>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => <div className="font-medium">{row.getValue("name")}</div>,
+    cell: ({ row }) => <div className="pl-4 font-medium">{row.getValue("name")}</div>,
+  },
+  {
+    accessorKey: "nisn",
+    header: "NISN",
   },
   {
     accessorKey: "class",
     header: "Kelas",
   },
+    {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => {
+        const status = row.getValue("status") as string;
+        return <Badge variant={status === 'Aktif' ? "default" : "destructive"}>{status}</Badge>
+    }
+  },
   {
     accessorKey: "dateOfBirth",
     header: "Tanggal Lahir",
     cell: ({ row }) => {
-        const date = new Date(row.getValue("dateOfBirth"));
-        return format(date, "dd MMMM yyyy", { locale: id });
+        try {
+            const date = new Date(row.getValue("dateOfBirth"));
+            if (isNaN(date.getTime())) {
+                return <span className="text-destructive text-xs">Tanggal tidak valid</span>;
+            }
+            return format(date, "dd MMMM yyyy", { locale: id });
+        } catch(e) {
+             return <span className="text-destructive text-xs">Tanggal tidak valid</span>;
+        }
     },
   },
   {

@@ -9,8 +9,21 @@ export interface School {
 export interface Student {
   id: string;
   name: string;
-  class: string;
+  nisn?: string;
+  nik?: string;
+  birthPlace?: string;
   dateOfBirth: string; // ISO 8601 format
+  class: string;
+  status: 'Aktif' | 'Tidak Aktif';
+  gender?: string;
+  address?: string;
+  phone?: string;
+  specialNeeds?: string;
+  disability?: string;
+  kipPipNumber?: string;
+  fatherName?: string;
+  motherName?: string;
+  guardianName?: string;
   schoolId: string;
 }
 

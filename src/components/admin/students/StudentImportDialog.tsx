@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, FileDown } from "lucide-react";
 import * as XLSX from "xlsx";
+import { db } from "@/lib/firebase";
+import { writeBatch, doc, collection, getDoc, increment } from "firebase/firestore";
 
 interface StudentImportDialogProps {
     isOpen: boolean;
@@ -42,7 +44,6 @@ export function StudentImportDialog({ isOpen, onOpenChange, schoolId }: StudentI
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Data Siswa");
         
-        // Atur lebar kolom agar lebih mudah dibaca
         const colWidths = CSV_HEADERS.map(header => ({ wch: header.length + 5 }));
         worksheet["!cols"] = colWidths;
         
@@ -69,11 +70,10 @@ export function StudentImportDialog({ isOpen, onOpenChange, schoolId }: StudentI
                     throw new Error("Gagal membaca file.");
                 }
                 const data = e.target.result;
-                const workbook = XLSX.read(data, { type: 'array' });
+                const workbook = XLSX.read(data, { type: 'array', cellDates: true });
                 const sheetName = workbook.SheetNames[0];
                 const worksheet = workbook.Sheets[sheetName];
 
-                // Cek header dengan membaca baris pertama
                 const headers = XLSX.utils.sheet_to_json(worksheet, { header: 1, range: 0 })[0] as string[];
                 const missingHeaders = CSV_HEADERS.filter(h => !headers?.includes(h));
 
@@ -83,11 +83,10 @@ export function StudentImportDialog({ isOpen, onOpenChange, schoolId }: StudentI
                      return;
                 }
                 
-                const dataAsObjects = XLSX.utils.sheet_to_json(worksheet);
+                const dataAsObjects = XLSX.utils.sheet_to_json(worksheet, {raw: false});
                 const errors: string[] = [];
 
                 const processedData = dataAsObjects.map((row: any, index) => {
-                   // Bersihkan NIK dari tanda kutip dan pastikan itu string
                    if (row["NIK"]) {
                        let nik = String(row["NIK"]);
                        if (nik.startsWith("'")) {
@@ -98,6 +97,10 @@ export function StudentImportDialog({ isOpen, onOpenChange, schoolId }: StudentI
 
                    if (!row["Nama Lengkap"]) {
                        errors.push(`Baris ${index + 2}: Nama Lengkap tidak boleh kosong.`);
+                   }
+                   
+                   if (row["Tanggal Lahir"] && !(row["Tanggal Lahir"] instanceof Date)) {
+                        errors.push(`Baris ${index + 2}: Format Tanggal Lahir tidak valid.`);
                    }
                    
                    return row;
@@ -111,9 +114,9 @@ export function StudentImportDialog({ isOpen, onOpenChange, schoolId }: StudentI
                     setValidatedData(processedData);
                 }
 
-                setIsValidating(false);
             } catch (error: any) {
                 setValidationErrors([`Gagal memproses file Excel: ${error.message}`]);
+            } finally {
                 setIsValidating(false);
             }
         };
@@ -127,15 +130,51 @@ export function StudentImportDialog({ isOpen, onOpenChange, schoolId }: StudentI
         }
         setIsImporting(true);
         
-        console.log("Importing data for school:", schoolId, validatedData);
-        
         toast({ title: "Import Dimulai", description: `${validatedData.length} data siswa sedang diimpor.`});
-        
-        setTimeout(() => {
-          setIsImporting(false);
-          onOpenChange(false);
-          toast({ title: "Import Berhasil", description: "Data siswa telah berhasil ditambahkan."});
-        }, 2000);
+
+        const batch = writeBatch(db);
+
+        try {
+            const schoolRef = doc(db, 'schools', schoolId);
+            
+            validatedData.forEach((studentData) => {
+                const studentRef = doc(collection(db, 'schools', schoolId, 'students'));
+                
+                const newStudent = {
+                    name: studentData['Nama Lengkap'] || '',
+                    nisn: String(studentData['NISN'] || ''),
+                    nik: String(studentData['NIK'] || ''),
+                    birthPlace: studentData['Tempat Lahir'] || '',
+                    dateOfBirth: studentData['Tanggal Lahir'] instanceof Date ? studentData['Tanggal Lahir'].toISOString() : new Date().toISOString(),
+                    class: studentData['Tingkat - Rombel'] || '',
+                    status: studentData['Status'] === 'Tidak Aktif' ? 'Tidak Aktif' : 'Aktif',
+                    gender: studentData['Jenis Kelamin'] || '',
+                    address: studentData['Alamat'] || '',
+                    phone: String(studentData['No Telepon'] || ''),
+                    specialNeeds: studentData['Kebutuhan Khusus'] || '',
+                    disability: studentData['Disabilitas'] || '',
+                    kipPipNumber: String(studentData['Nomor KIP/PIP'] || ''),
+                    fatherName: studentData['Nama Ayah Kandung'] || '',
+                    motherName: studentData['Nama Ibu Kandung'] || '',
+                    guardianName: studentData['Nama Wali'] || '',
+                    schoolId: schoolId,
+                };
+                batch.set(studentRef, newStudent);
+            });
+
+            batch.update(schoolRef, { studentCount: increment(validatedData.length) });
+
+            await batch.commit();
+
+            toast({ title: "Import Berhasil", description: `${validatedData.length} data siswa telah berhasil ditambahkan.`});
+            onOpenChange(false);
+
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : "Terjadi kesalahan yang tidak diketahui.";
+            toast({ variant: "destructive", title: "Import Gagal", description: errorMessage });
+        } finally {
+            setIsImporting(false);
+        }
     };
     
     const resetState = () => {
@@ -182,11 +221,10 @@ export function StudentImportDialog({ isOpen, onOpenChange, schoolId }: StudentI
                 
                     {validationErrors.length > 0 && (
                         <div className="p-3 rounded-md bg-destructive/10 text-destructive text-sm space-y-1">
-                            <p className="font-semibold">Ditemukan {validationErrors.length} Kesalahan Validasi:</p>
+                            <p className="font-semibold">Ditemukan {validationErrors.length + (validationErrors.length > 5 ? "+" : "")} Kesalahan Validasi:</p>
                             <ul className="list-disc list-inside">
                                 {validationErrors.map((error, i) => <li key={i}>{error}</li>)}
                             </ul>
-                            {validationErrors.length > 5 && <p>Dan lainnya...</p>}
                         </div>
                     )}
                 </div>

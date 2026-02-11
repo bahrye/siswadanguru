@@ -10,11 +10,12 @@ import { columns as studentColumns } from "@/components/admin/students/columns";
 import { columns as teacherColumns } from "@/components/admin/teachers/columns";
 import type { School as SchoolType, Student, Teacher } from "@/lib/types";
 import { db } from "@/lib/firebase";
-import { doc, getDoc } from "firebase/firestore";
-import { mockStudents, mockTeachers } from "@/lib/mock-data";
+import { doc, getDoc, collection, onSnapshot, query, orderBy } from "firebase/firestore";
+import { mockTeachers } from "@/lib/mock-data";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { StudentImportDialog } from "@/components/admin/students/StudentImportDialog";
+import { useToast } from "@/hooks/use-toast";
 
 
 export function SchoolDetailClientPage({ schoolId }: { schoolId: string }) {
@@ -24,40 +25,58 @@ export function SchoolDetailClientPage({ schoolId }: { schoolId: string }) {
     const [loading, setLoading] = useState(true);
     const [isImportOpen, setImportOpen] = useState(false);
     const router = useRouter();
+    const { toast } = useToast();
 
     useEffect(() => {
-        async function getSchoolData() {
-            setLoading(true);
-            const schoolRef = doc(db, 'schools', schoolId);
-            const schoolSnap = await getDoc(schoolRef);
+        setLoading(true);
+        const schoolRef = doc(db, 'schools', schoolId);
 
-            if (!schoolSnap.exists()) {
+        const getSchool = async () => {
+            const schoolSnap = await getDoc(schoolRef);
+            if (schoolSnap.exists()) {
+                setSchool({ id: schoolSnap.id, ...schoolSnap.data() } as SchoolType);
+            } else {
                 setLoading(false);
                 notFound();
-                return;
             }
-            
-            const schoolData = { id: schoolSnap.id, ...schoolSnap.data() } as SchoolType;
-            setSchool(schoolData);
+        };
 
-            // For now, students and teachers are still from mock data
-            // In a real app, you would fetch these from subcollections.
-            const studentData = mockStudents.filter(s => s.schoolId === schoolId);
-            const teacherData = mockTeachers.filter(t => t.schoolId === schoolId);
-            setStudents(studentData);
-            setTeachers(teacherData);
+        getSchool();
 
+        const studentsQuery = query(collection(db, 'schools', schoolId, 'students'), orderBy('name', 'asc'));
+        const unsubscribeStudents = onSnapshot(studentsQuery, (querySnapshot) => {
+            const studentList = querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data(),
+            } as Student));
+            setStudents(studentList);
             setLoading(false);
-        }
+        }, (error) => {
+            console.error("Error fetching students: ", error);
+            toast({
+                variant: "destructive",
+                title: "Gagal memuat siswa",
+                description: "Terjadi kesalahan saat mengambil data siswa."
+            });
+            setLoading(false);
+        });
 
-        getSchoolData();
-    }, [schoolId]);
+        // For now, teachers are still from mock data
+        const teacherData = mockTeachers.filter(t => t.schoolId === schoolId);
+        setTeachers(teacherData);
+        
+        return () => {
+            unsubscribeStudents();
+        };
+    }, [schoolId, toast]);
 
     if (loading) {
         return (
              <div className="flex-1 space-y-8 p-4 md:p-8 pt-6">
                 <div className="flex items-center gap-4">
-                     <Skeleton className="h-8 w-8" />
+                     <Button variant="outline" size="icon" className="h-8 w-8" disabled>
+                        <ArrowLeft className="h-4 w-4" />
+                     </Button>
                     <div className="space-y-2">
                         <Skeleton className="h-8 w-48" />
                         <Skeleton className="h-5 w-64" />
