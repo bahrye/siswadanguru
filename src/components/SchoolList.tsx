@@ -11,10 +11,12 @@ import type { School as SchoolType } from "@/lib/types";
 import { db } from "@/lib/firebase";
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 import { Skeleton } from "./ui/skeleton";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function SchoolList() {
   const [schools, setSchools] = useState<SchoolType[]>([]);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
 
   useEffect(() => {
     setLoading(true);
@@ -87,16 +89,16 @@ export function SchoolList() {
             ) : (
               <div className="space-y-4">
                 {schools.map((school) => (
-                  <div key={school.id} className="flex items-center justify-between p-4 border rounded-lg bg-secondary/30 hover:bg-secondary/60 transition-colors">
-                    <div>
+                  <div key={school.id} className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 border rounded-lg bg-secondary/30 hover:bg-secondary/60 transition-colors">
+                    <div className="flex-1">
                       <h3 className="font-semibold font-headline">{school.name}</h3>
                       <p className="text-sm text-muted-foreground">{school.address}</p>
                     </div>
-                    <div className="flex items-center gap-4">
-                        <Badge variant="outline">{school.studentCount.toLocaleString('id-ID')} Siswa</Badge>
-                        <Badge variant="outline">{school.teacherCount.toLocaleString('id-ID')} Guru</Badge>
-                         <Button asChild variant="outline" size="sm">
-                             <Link href="/login">Lihat Detail</Link>
+                    <div className="flex items-center gap-4 flex-shrink-0 w-full md:w-auto">
+                        <Badge variant="outline" className="hidden sm:inline-flex">{school.studentCount.toLocaleString('id-ID')} Siswa</Badge>
+                        <Badge variant="outline" className="hidden sm:inline-flex">{school.teacherCount.toLocaleString('id-ID')} Guru</Badge>
+                         <Button asChild variant="outline" size="sm" className="ml-auto">
+                             <Link href={user ? `/admin/schools/${school.id}` : "/login"}>Lihat Detail</Link>
                          </Button>
                     </div>
                   </div>

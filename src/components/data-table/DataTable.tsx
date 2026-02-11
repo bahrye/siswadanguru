@@ -63,14 +63,14 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
             <Input
             placeholder={`Saring berdasarkan ${filterColumnId}...`}
             value={(table.getColumn(filterColumnId)?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
                 table.getColumn(filterColumnId)?.setFilterValue(event.target.value)
             }
-            className="max-w-sm"
+            className="w-full md:max-w-sm"
             />
             <DataTableViewOptions table={table} />
       </div>

@@ -18,8 +18,8 @@ export default function Home() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background to-black/30" />
             <div className="relative container mx-auto px-4 md:px-6 h-full flex flex-col justify-center text-primary-foreground">
-                <h1 className="font-headline text-4xl md:text-5xl font-bold">Selamat Datang di Manajer EduCloud</h1>
-                <p className="mt-4 max-w-2xl text-lg text-primary-foreground/80">
+                <h1 className="font-headline text-3xl sm:text-4xl md:text-5xl font-bold">Selamat Datang di Manajer EduCloud</h1>
+                <p className="mt-4 max-w-2xl text-base sm:text-lg text-primary-foreground/80">
                     Solusi terpusat untuk mengelola data sekolah, siswa, dan guru di berbagai institusi.
                 </p>
             </div>

@@ -60,7 +60,7 @@ export default function AdminDashboardPage() {
   return (
     <div className="flex-1 space-y-8 p-4 md:p-8 pt-6">
       <div className="flex items-center justify-between space-y-2">
-        <h2 className="text-3xl font-bold tracking-tight font-headline">Dasbor Admin</h2>
+        <h2 className="text-2xl font-bold tracking-tight font-headline md:text-3xl">Dasbor Admin</h2>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -69,8 +69,8 @@ export default function AdminDashboardPage() {
         <StatCard title="Total Guru" value={totalTeachers.toLocaleString('id-ID')} Icon={School} description="Anggota fakultas" />
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="col-span-4">
+      <div className="grid gap-4 grid-cols-1 lg:grid-cols-7">
+        <Card className="col-span-1 lg:col-span-4">
             <CardHeader>
                 <CardTitle>Distribusi Siswa per Sekolah</CardTitle>
             </CardHeader>
@@ -103,7 +103,7 @@ export default function AdminDashboardPage() {
                 </ResponsiveContainer>
             </CardContent>
         </Card>
-        <Card className="col-span-4 lg:col-span-3">
+        <Card className="col-span-1 lg:col-span-3">
             <CardHeader>
                 <CardTitle>Aktivitas Terkini</CardTitle>
             </CardHeader>
