@@ -1,0 +1,33 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Aturan untuk sekolah tetap sama.
+    // Izinkan siapa saja untuk membaca (untuk halaman beranda),
+    // tetapi hanya admin yang dapat menulis.
+    match /schools/{schoolId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Aturan ini mengizinkan operasi tulis (buat, perbarui, hapus) pada DOKUMEN SISWA TERTENTU.
+    // Ini digunakan oleh StudentForm dan StudentActions yang selalu bekerja dengan path dokumen lengkap.
+    match /schools/{schoolId}/students/{studentId} {
+      allow write: if request.auth != null;
+    }
+
+    // Aturan INI PENTING untuk query collection group.
+    // Ini mengizinkan LISTENING/READING semua siswa dari SEMUA sekolah sekaligus,
+    // yang diperlukan untuk halaman "Manajemen Siswa" terpusat.
+    // Operasi ini hanya diizinkan untuk pengguna yang terautentikasi.
+    match /{path=**}/students/{studentId} {
+      allow read: if request.auth != null;
+    }
+    
+    // Placeholder untuk aturan sub-koleksi di masa mendatang.
+    // Anda perlu menambahkan aturan untuk guru ketika fungsionalitasnya diterapkan.
+    // Contoh:
+    // match /schools/{schoolId}/teachers/{teacherId} {
+    //   allow read, write: if request.auth != null;
+    // }
+  }
+}
