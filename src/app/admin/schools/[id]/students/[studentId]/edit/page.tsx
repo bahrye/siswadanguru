@@ -1,5 +1,6 @@
-import { EditStudentClientPage } from "@/components/admin/students/EditStudentClientPage";
+import { redirect } from 'next/navigation';
 
-export default function EditStudentPage({ params }: { params: { schoolId: string, studentId: string } }) {
-    return <EditStudentClientPage schoolId={params.schoolId} studentId={params.studentId} />;
+// Halaman ini tidak lagi digunakan dan dialihkan ke halaman utama manajemen siswa.
+export default function EditStudentPage() {
+    redirect('/admin/students');
 }

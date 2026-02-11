@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { MoreHorizontal, Loader2 } from "lucide-react";
 
 import type { School } from "@/lib/types";
@@ -91,9 +90,6 @@ export function SchoolActions({ school, onEdit }: SchoolActionsProps) {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Aksi</DropdownMenuLabel>
-          <DropdownMenuItem asChild>
-            <Link href={`/admin/schools/${school.id}`}>Lihat Detail</Link>
-          </DropdownMenuItem>
           <DropdownMenuItem onClick={onEdit}>
             Edit Sekolah
           </DropdownMenuItem>

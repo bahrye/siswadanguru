@@ -26,6 +26,21 @@ export const columns: ColumnDef<Student>[] = [
     cell: ({ row }) => <div className="pl-4 font-medium">{row.getValue("name")}</div>,
   },
   {
+    accessorKey: "schoolName",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Sekolah
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => <div className="pl-4">{row.original.schoolName}</div>,
+  },
+  {
     accessorKey: "nisn",
     header: "NISN",
   },

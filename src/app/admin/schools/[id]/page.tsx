@@ -1,5 +1,6 @@
-import { SchoolDetailClientPage } from "@/components/admin/schools/SchoolDetailClientPage";
+import { redirect } from 'next/navigation';
 
-export default function SchoolDetailPage({ params }: { params: { id: string } }) {
-    return <SchoolDetailClientPage schoolId={params.id} />;
+// Halaman ini tidak lagi digunakan dan dialihkan ke halaman utama manajemen sekolah.
+export default function SchoolDetailPage() {
+    redirect('/admin/schools');
 }

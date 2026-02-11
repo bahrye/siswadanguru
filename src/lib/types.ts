@@ -25,6 +25,7 @@ export interface Student {
   motherName?: string;
   guardianName?: string;
   schoolId: string;
+  schoolName?: string; // Digunakan untuk tampilan di UI
 }
 
 export interface Teacher {

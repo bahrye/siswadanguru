@@ -7,6 +7,7 @@ import {
   Building,
   LayoutDashboard,
   LogOut,
+  Users,
 } from "lucide-react";
 import {
   Sidebar,
@@ -56,6 +57,11 @@ export function AdminSidebar() {
       href: "/admin/schools",
       label: "Sekolah",
       icon: Building,
+    },
+    {
+      href: "/admin/students",
+      label: "Siswa",
+      icon: Users,
     },
   ];
 

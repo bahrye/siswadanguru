@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import type { Student } from "@/lib/types";
+import type { Student, School } from "@/lib/types";
 import { studentFormSchema } from "@/lib/schemas";
 import { useState } from "react";
 import { CalendarIcon, Loader2 } from "lucide-react";
@@ -27,20 +27,24 @@ import { id } from "date-fns/locale";
 import { Calendar } from "@/components/ui/calendar";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface StudentFormProps {
   student?: Student;
-  schoolId: string;
+  schoolId?: string; // Diperlukan untuk edit, opsional untuk tambah
+  schools?: School[]; // Diperlukan untuk tambah
   onFinished: () => void;
 }
 
-export function StudentForm({ student, schoolId, onFinished }: StudentFormProps) {
+export function StudentForm({ student, schoolId, schools = [], onFinished }: StudentFormProps) {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const isEditMode = !!student;
 
   const form = useForm<z.infer<typeof studentFormSchema>>({
     resolver: zodResolver(studentFormSchema),
     defaultValues: {
+      schoolId: schoolId || student?.schoolId || "",
       name: student?.name || "",
       nisn: student?.nisn || "",
       nik: student?.nik || "",
@@ -71,15 +75,14 @@ export function StudentForm({ student, schoolId, onFinished }: StudentFormProps)
       const studentData = {
           ...values,
           dateOfBirth: values.dateOfBirth ? values.dateOfBirth.toISOString() : null,
-          schoolId: schoolId,
       };
 
-      if (student) {
-        const studentRef = doc(db, 'schools', schoolId, 'students', student.id);
+      if (isEditMode && student) {
+        const studentRef = doc(db, 'schools', values.schoolId, 'students', student.id);
         await updateDoc(studentRef, studentData);
       } else {
-        const schoolRef = doc(db, 'schools', schoolId);
-        const studentRef = doc(collection(db, 'schools', schoolId, 'students'));
+        const schoolRef = doc(db, 'schools', values.schoolId);
+        const studentRef = doc(collection(db, 'schools', values.schoolId, 'students'));
         const batch = writeBatch(db);
         batch.set(studentRef, studentData);
         batch.update(schoolRef, { studentCount: increment(1) });
@@ -107,6 +110,32 @@ export function StudentForm({ student, schoolId, onFinished }: StudentFormProps)
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col h-full overflow-hidden">
         <div className="flex-1 overflow-y-auto pr-6 pl-1 -ml-1">
             <div className="space-y-4">
+              {!isEditMode && (
+                 <FormField
+                    control={form.control}
+                    name="schoolId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Sekolah</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isSubmitting || isEditMode}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Pilih sekolah..." />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {schools.map((s) => (
+                              <SelectItem key={s.id} value={s.id}>
+                                {s.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+              )}
               <FormField control={form.control} name="name" render={({ field }) => (
                   <FormItem>
                   <FormLabel>Nama Lengkap</FormLabel>

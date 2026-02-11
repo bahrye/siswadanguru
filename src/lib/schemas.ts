@@ -6,6 +6,7 @@ export const schoolFormSchema = z.object({
 });
 
 export const studentFormSchema = z.object({
+  schoolId: z.string().min(1, { message: "Sekolah wajib dipilih." }),
   name: z.string().min(3, { message: "Nama lengkap minimal harus 3 karakter." }),
   nisn: z.string().optional().or(z.literal('')),
   nik: z.string().optional().or(z.literal('')),
