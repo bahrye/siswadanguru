@@ -1,0 +1,21 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Izinkan siapa saja untuk membaca data sekolah (untuk halaman beranda publik),
+    // tetapi hanya pengguna yang terautentikasi (admin) yang dapat menulis data.
+    match /schools/{schoolId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Placeholder untuk aturan sub-koleksi di masa mendatang.
+    // Anda perlu menambahkan aturan untuk siswa dan guru ketika fungsionalitasnya diterapkan.
+    // Contoh:
+    // match /schools/{schoolId}/students/{studentId} {
+    //   allow read, write: if request.auth != null;
+    // }
+    // match /schools/{schoolId}/teachers/{teacherId} {
+    //   allow read, write: if request.auth != null;
+    // }
+  }
+}
