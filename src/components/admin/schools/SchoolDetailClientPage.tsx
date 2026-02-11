@@ -101,7 +101,7 @@ export function SchoolDetailClientPage({ schoolId }: { schoolId: string }) {
     }
 
     return (
-        <div className="flex-1 space-y-8 p-4 md:p-8 pt-6">
+        <div className="flex-1 space-y-8 p-4 md:p-8 pt-6 min-w-0">
             <div className="flex items-center gap-4">
                 <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => router.back()}>
                     <ArrowLeft className="h-4 w-4" />
@@ -166,7 +166,7 @@ export function SchoolDetailClientPage({ schoolId }: { schoolId: string }) {
                                             Tambah Siswa
                                         </Button>
                                     </DialogTrigger>
-                                    <DialogContent className="sm:max-w-3xl">
+                                    <DialogContent className="sm:max-w-3xl flex flex-col max-h-[90vh]">
                                         <DialogHeader>
                                             <DialogTitle>Tambah Siswa Baru</DialogTitle>
                                             <DialogDescription>

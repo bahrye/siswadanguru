@@ -76,7 +76,7 @@ export function StudentActions({ student }: StudentActionsProps) {
   return (
     <>
       <Dialog open={isEditDialogOpen} onOpenChange={setEditDialogOpen}>
-        <DialogContent className="sm:max-w-3xl">
+        <DialogContent className="sm:max-w-3xl flex flex-col max-h-[90vh]">
           <DialogHeader>
             <DialogTitle>Edit Siswa</DialogTitle>
             <DialogDescription>
