@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DataTable } from "@/components/data-table/DataTable";
 import { columns } from "@/components/admin/schools/columns";
 import type { School } from "@/lib/types";
@@ -15,10 +15,43 @@ import {
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import { SchoolForm } from "./SchoolForm";
+import { db } from "@/lib/firebase";
+import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
+import { Skeleton } from "@/components/ui/skeleton";
 
-
-export function SchoolClientPage({ data }: { data: School[] }) {
+export function SchoolClientPage() {
+  const [data, setData] = useState<School[]>([]);
+  const [loading, setLoading] = useState(true);
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    const schoolsCol = collection(db, "schools");
+    const q = query(schoolsCol, orderBy("name", "asc"));
+    
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const schoolList = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+      } as School));
+      setData(schoolList);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        <div className="flex justify-end">
+          <Skeleton className="h-10 w-48" />
+        </div>
+        <Skeleton className="h-12 w-full" />
+        <Skeleton className="h-64 w-full" />
+      </div>
+    );
+  }
 
   return (
     <>

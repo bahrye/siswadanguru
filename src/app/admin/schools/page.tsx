@@ -1,16 +1,6 @@
 import { SchoolClientPage } from "@/components/admin/schools/SchoolClientPage";
-import { mockSchools } from "@/lib/mock-data";
-import { PlusCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
-// In a real application, you would fetch this data from Firestore
-async function getSchools() {
-  return mockSchools;
-}
-
-export default async function SchoolsPage() {
-  const schools = await getSchools();
-
+export default function SchoolsPage() {
   return (
     <div className="flex-1 space-y-8 p-4 md:p-8 pt-6">
        <div className="flex items-center justify-between space-y-2">
@@ -21,7 +11,7 @@ export default async function SchoolsPage() {
             </p>
         </div>
       </div>
-      <SchoolClientPage data={schools} />
+      <SchoolClientPage />
     </div>
   );
 }

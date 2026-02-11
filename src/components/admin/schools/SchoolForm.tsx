@@ -15,11 +15,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import type { School } from "@/lib/types";
+import { schoolFormSchema, createSchool, updateSchool } from "@/app/admin/schools/actions";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 
-const formSchema = z.object({
-  name: z.string().min(3, "Nama sekolah minimal harus 3 karakter."),
-  address: z.string().min(5, "Alamat minimal harus 5 karakter."),
-});
 
 interface SchoolFormProps {
   school?: School;
@@ -28,24 +27,38 @@ interface SchoolFormProps {
 
 export function SchoolForm({ school, onFinished }: SchoolFormProps) {
   const { toast } = useToast();
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const form = useForm<z.infer<typeof schoolFormSchema>>({
+    resolver: zodResolver(schoolFormSchema),
     defaultValues: {
       name: school?.name || "",
       address: school?.address || "",
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    // In a real app, you would call a server action here to save the data.
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof schoolFormSchema>) {
+    setIsSubmitting(true);
     
-    toast({
-      title: school ? "Sekolah Diperbarui" : "Sekolah Dibuat",
-      description: `Sekolah "${values.name}" telah berhasil disimpan.`,
-    });
-    
-    onFinished();
+    const result = school 
+      ? await updateSchool(school.id, values) 
+      : await createSchool(values);
+
+    if (result.success) {
+      toast({
+        title: school ? "Sekolah Diperbarui" : "Sekolah Dibuat",
+        description: `Sekolah "${values.name}" telah berhasil disimpan.`,
+      });
+      onFinished();
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Operasi Gagal",
+        description: result.message,
+      });
+    }
+
+    setIsSubmitting(false);
   }
 
   return (
@@ -58,7 +71,7 @@ export function SchoolForm({ school, onFinished }: SchoolFormProps) {
             <FormItem>
               <FormLabel>Nama Sekolah</FormLabel>
               <FormControl>
-                <Input placeholder="contoh: SMA Negeri 1 Harapan Bangsa" {...field} />
+                <Input placeholder="contoh: SMA Negeri 1 Harapan Bangsa" {...field} disabled={isSubmitting} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -71,15 +84,16 @@ export function SchoolForm({ school, onFinished }: SchoolFormProps) {
             <FormItem>
               <FormLabel>Alamat</FormLabel>
               <FormControl>
-                <Input placeholder="contoh: Jl. Pendidikan No. 1" {...field} />
+                <Input placeholder="contoh: Jl. Pendidikan No. 1" {...field} disabled={isSubmitting} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         <div className="flex justify-end pt-4">
-          <Button type="submit">
-            {form.formState.isSubmitting ? "Menyimpan..." : "Simpan perubahan"}
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {isSubmitting ? "Menyimpan..." : "Simpan perubahan"}
           </Button>
         </div>
       </form>

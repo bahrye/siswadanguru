@@ -1,9 +1,7 @@
 import type { School, Student, Teacher } from './types';
 
 export const mockSchools: School[] = [
-  { id: '1', name: 'SMA Negeri 1 Harapan Bangsa', address: 'Jl. Pendidikan No. 1', studentCount: 1250, teacherCount: 80 },
-  { id: '2', name: 'SMK Bisa Berkarya', address: 'Jl. Industri No. 10', studentCount: 980, teacherCount: 65 },
-  { id: '3', name: 'SMA Cendekia Mulia', address: 'Jl. Kebangsaan No. 22', studentCount: 760, teacherCount: 55 },
+  // Data sekolah sekarang diambil dari Firestore
 ];
 
 export const mockStudents: Student[] = [
