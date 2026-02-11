@@ -52,25 +52,35 @@ export function StudentExportDialog({ isOpen, onOpenChange, students, schoolName
                 return;
             }
 
-            const dataForSheet = studentsToExport.map((student, index) => ({
-                "No": index + 1,
-                "Nama Lengkap": student.name,
-                "NISN": student.nisn || '',
-                "NIK": student.nik || '',
-                "Tempat Lahir": student.birthPlace || '',
-                "Tanggal Lahir": student.dateOfBirth ? format(new Date(student.dateOfBirth), "yyyy-MM-dd") : "",
-                "Tingkat - Rombel": student.class || '',
-                "Status": student.status,
-                "Jenis Kelamin": student.gender || '',
-                "Alamat": student.address || '',
-                "No Telepon": student.phone || '',
-                "Kebutuhan Khusus": student.specialNeeds || '',
-                "Disabilitas": student.disability || '',
-                "Nomor KIP/PIP": student.kipPipNumber || '',
-                "Nama Ayah Kandung": student.fatherName || '',
-                "Nama Ibu Kandung": student.motherName || '',
-                "Nama Wali": student.guardianName || '',
-            }));
+            const dataForSheet = studentsToExport.map((student, index) => {
+                let formattedDate = "";
+                if (student.dateOfBirth) {
+                    const date = new Date(student.dateOfBirth);
+                    if (!isNaN(date.getTime())) {
+                        formattedDate = format(date, "yyyy-MM-dd");
+                    }
+                }
+                
+                return {
+                    "No": index + 1,
+                    "Nama Lengkap": student.name,
+                    "NISN": student.nisn || '',
+                    "NIK": student.nik || '',
+                    "Tempat Lahir": student.birthPlace || '',
+                    "Tanggal Lahir": formattedDate,
+                    "Tingkat - Rombel": student.class || '',
+                    "Status": student.status,
+                    "Jenis Kelamin": student.gender || '',
+                    "Alamat": student.address || '',
+                    "No Telepon": student.phone || '',
+                    "Kebutuhan Khusus": student.specialNeeds || '',
+                    "Disabilitas": student.disability || '',
+                    "Nomor KIP/PIP": student.kipPipNumber || '',
+                    "Nama Ayah Kandung": student.fatherName || '',
+                    "Nama Ibu Kandung": student.motherName || '',
+                    "Nama Wali": student.guardianName || '',
+                };
+            });
 
             const worksheet = XLSX.utils.json_to_sheet(dataForSheet, { header: EXPORT_HEADERS });
             const workbook = XLSX.utils.book_new();

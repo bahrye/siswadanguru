@@ -66,7 +66,7 @@ export function StudentForm({ student, schoolId, onFinished }: StudentFormProps)
     try {
       const studentData = {
           ...values,
-          dateOfBirth: values.dateOfBirth.toISOString(),
+          dateOfBirth: values.dateOfBirth ? values.dateOfBirth.toISOString() : null,
           schoolId: schoolId,
       };
 
@@ -156,7 +156,7 @@ export function StudentForm({ student, schoolId, onFinished }: StudentFormProps)
                     <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                         mode="single"
-                        selected={field.value}
+                        selected={field.value || undefined}
                         onSelect={field.onChange}
                         disabled={(date) =>
                         date > new Date() || date < new Date("1900-01-01")

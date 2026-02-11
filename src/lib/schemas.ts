@@ -10,9 +10,7 @@ export const studentFormSchema = z.object({
   nisn: z.string().optional().or(z.literal('')),
   nik: z.string().optional().or(z.literal('')),
   birthPlace: z.string().optional().or(z.literal('')),
-  dateOfBirth: z.date({
-    required_error: "Tanggal lahir wajib diisi.",
-  }),
+  dateOfBirth: z.date({ invalid_type_error: "Format tanggal tidak valid." }).optional().nullable(),
   class: z.string().min(1, { message: "Tingkat - Rombel wajib diisi." }),
   status: z.enum(['Aktif', 'Tidak Aktif']),
   gender: z.enum(['Laki-laki', 'Perempuan'], {

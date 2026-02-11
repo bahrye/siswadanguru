@@ -210,7 +210,7 @@ export function StudentImportDialog({ isOpen, onOpenChange, schoolId }: StudentI
                     nisn: String(studentData['NISN'] || ''),
                     nik: String(studentData['NIK'] || ''),
                     birthPlace: studentData['Tempat Lahir'] || '',
-                    dateOfBirth: studentData['Tanggal Lahir'] ? (studentData['Tanggal Lahir'] as Date).toISOString() : '',
+                    dateOfBirth: studentData['Tanggal Lahir'] ? (studentData['Tanggal Lahir'] as Date).toISOString() : null,
                     class: studentData['Tingkat - Rombel'] || '',
                     status: studentData['Status'] === 'Tidak Aktif' ? 'Tidak Aktif' : 'Aktif',
                     gender: studentData['Jenis Kelamin'] || '',

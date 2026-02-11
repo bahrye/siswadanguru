@@ -12,7 +12,7 @@ export interface Student {
   nisn?: string;
   nik?: string;
   birthPlace?: string;
-  dateOfBirth: string; // ISO 8601 format
+  dateOfBirth: string | null; // ISO 8601 format
   class: string;
   status: 'Aktif' | 'Tidak Aktif';
   gender?: string;
