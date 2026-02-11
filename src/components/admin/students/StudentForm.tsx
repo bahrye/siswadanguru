@@ -100,7 +100,7 @@ export function StudentForm({ student, schoolId, onFinished }: StudentFormProps)
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 max-h-[70vh] overflow-y-auto pr-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 max-h-[70vh] overflow-y-auto pr-4">
         <FormField control={form.control} name="name" render={({ field }) => (
             <FormItem>
               <FormLabel>Nama Lengkap</FormLabel>
@@ -285,7 +285,7 @@ export function StudentForm({ student, schoolId, onFinished }: StudentFormProps)
                 <FormMessage />
             </FormItem>
         )} />
-        <div className="flex justify-end pt-4 sticky bottom-0 bg-background/95 pb-4 -mb-4">
+        <div className="flex justify-end pt-4">
           <Button type="submit" disabled={isSubmitting}>
             {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {isSubmitting ? "Menyimpan..." : "Simpan"}
