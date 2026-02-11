@@ -74,7 +74,7 @@ export function DataTable<TData, TValue>({
             />
             <DataTableViewOptions table={table} />
       </div>
-      <div className="rounded-md border bg-card">
+      <div className="w-full overflow-auto rounded-md border bg-card">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
