@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { notFound, useRouter } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, School, MapPin, ArrowLeft } from "lucide-react";
+import { Users, School, MapPin, ArrowLeft, PlusCircle, Upload, Download } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DataTable } from "@/components/data-table/DataTable";
 import { columns as studentColumns } from "@/components/admin/students/columns";
@@ -125,11 +125,27 @@ export function SchoolDetailClientPage({ schoolId }: { schoolId: string }) {
                 </TabsList>
                 <TabsContent value="students" className="space-y-4">
                     <Card>
-                        <CardHeader>
-                            <CardTitle>Manajemen Siswa</CardTitle>
-                             <CardDescription>
-                                Tambah, edit, atau hapus data siswa untuk sekolah ini.
-                            </CardDescription>
+                        <CardHeader className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                             <div>
+                                <CardTitle>Manajemen Siswa</CardTitle>
+                                <CardDescription>
+                                    Tambah, edit, atau hapus data siswa untuk sekolah ini.
+                                </CardDescription>
+                             </div>
+                             <div className="flex w-full md:w-auto gap-2">
+                                <Button className="w-full sm:w-auto">
+                                    <PlusCircle className="mr-2 h-4 w-4" />
+                                    Tambah Siswa
+                                </Button>
+                                <Button variant="outline" className="w-full sm:w-auto">
+                                    <Upload className="mr-2 h-4 w-4" />
+                                    Import
+                                </Button>
+                                <Button variant="outline" className="w-full sm:w-auto">
+                                    <Download className="mr-2 h-4 w-4" />
+                                    Export
+                                </Button>
+                            </div>
                         </CardHeader>
                         <CardContent>
                            <DataTable columns={studentColumns} data={students} filterColumnId="name" />
