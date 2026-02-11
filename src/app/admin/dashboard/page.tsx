@@ -1,3 +1,5 @@
+"use client";
+
 import { Building, Users, School } from "lucide-react";
 import { StatCard } from "@/components/StatCard";
 import { mockSchools } from "@/lib/mock-data";
