@@ -99,8 +99,19 @@ export function StudentImportDialog({ isOpen, onOpenChange, schoolId }: StudentI
                        errors.push(`Baris ${index + 2}: Nama Lengkap tidak boleh kosong.`);
                    }
                    
-                   if (row["Tanggal Lahir"] && !(row["Tanggal Lahir"] instanceof Date)) {
-                        errors.push(`Baris ${index + 2}: Format Tanggal Lahir tidak valid.`);
+                   if (row["Tanggal Lahir"]) {
+                        let dateObj;
+                        if(row["Tanggal Lahir"] instanceof Date) {
+                            dateObj = row["Tanggal Lahir"];
+                        } else {
+                            dateObj = new Date(row["Tanggal Lahir"]);
+                        }
+                        
+                        if (isNaN(dateObj.getTime())) {
+                            errors.push(`Baris ${index + 2}: Format Tanggal Lahir tidak valid.`);
+                        } else {
+                            row["Tanggal Lahir"] = dateObj;
+                        }
                    }
                    
                    return row;
@@ -145,7 +156,7 @@ export function StudentImportDialog({ isOpen, onOpenChange, schoolId }: StudentI
                     nisn: String(studentData['NISN'] || ''),
                     nik: String(studentData['NIK'] || ''),
                     birthPlace: studentData['Tempat Lahir'] || '',
-                    dateOfBirth: studentData['Tanggal Lahir'] instanceof Date ? studentData['Tanggal Lahir'].toISOString() : new Date().toISOString(),
+                    dateOfBirth: studentData['Tanggal Lahir'] ? (studentData['Tanggal Lahir'] as Date).toISOString() : '',
                     class: studentData['Tingkat - Rombel'] || '',
                     status: studentData['Status'] === 'Tidak Aktif' ? 'Tidak Aktif' : 'Aktif',
                     gender: studentData['Jenis Kelamin'] || '',
