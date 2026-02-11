@@ -4,8 +4,8 @@ import { AuthProvider } from '@/contexts/AuthContext';
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'EduCloud Manager',
-  description: 'A multi-school database management system for students and teachers.',
+  title: 'Manajer EduCloud',
+  description: 'Sistem manajemen basis data multi-sekolah untuk siswa dan guru.',
 };
 
 export default function RootLayout({

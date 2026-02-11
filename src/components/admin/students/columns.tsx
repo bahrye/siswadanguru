@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { format } from 'date-fns';
+import { id } from 'date-fns/locale';
 
 export const columns: ColumnDef<Student>[] = [
   {
@@ -22,7 +23,7 @@ export const columns: ColumnDef<Student>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Student Name
+          Nama Siswa
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -31,14 +32,14 @@ export const columns: ColumnDef<Student>[] = [
   },
   {
     accessorKey: "class",
-    header: "Class",
+    header: "Kelas",
   },
   {
     accessorKey: "dateOfBirth",
-    header: "Date of Birth",
+    header: "Tanggal Lahir",
     cell: ({ row }) => {
         const date = new Date(row.getValue("dateOfBirth"));
-        return format(date, "dd MMMM yyyy");
+        return format(date, "dd MMMM yyyy", { locale: id });
     },
   },
   {
@@ -50,22 +51,22 @@ export const columns: ColumnDef<Student>[] = [
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
+              <span className="sr-only">Buka menu</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuLabel>Aksi</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => alert(`Editing ${student.name}`)}
+              onClick={() => alert(`Mengedit ${student.name}`)}
             >
-              Edit Student
+              Edit Siswa
             </DropdownMenuItem>
             <DropdownMenuItem
               className="text-destructive focus:text-destructive"
-              onClick={() => alert(`Deleting ${student.name}`)}
+              onClick={() => alert(`Menghapus ${student.name}`)}
             >
-              Delete Student
+              Hapus Siswa
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

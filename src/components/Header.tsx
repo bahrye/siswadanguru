@@ -31,7 +31,7 @@ export default function Header() {
         <Link href="/" className="flex items-center gap-2">
           <BookOpenCheck className="h-7 w-7 text-primary" />
           <span className="font-headline text-xl font-bold tracking-tight">
-            EduCloud Manager
+            Manajer EduCloud
           </span>
         </Link>
         <div className="flex items-center gap-4">
@@ -40,7 +40,7 @@ export default function Header() {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                   <Avatar className="h-10 w-10">
-                    <AvatarImage src={user.photoURL || "https://picsum.photos/seed/avatar1/40/40"} alt={user.displayName || "User"} data-ai-hint="person portrait" />
+                    <AvatarImage src={user.photoURL || "https://picsum.photos/seed/avatar1/40/40"} alt={user.displayName || "Pengguna"} data-ai-hint="person portrait" />
                     <AvatarFallback>
                       <UserCircle />
                     </AvatarFallback>
@@ -61,12 +61,12 @@ export default function Header() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => router.push("/admin/dashboard")}>
                   <LayoutDashboard className="mr-2 h-4 w-4" />
-                  <span>Dashboard</span>
+                  <span>Dasbor</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut}>
                   <LogOut className="mr-2 h-4 w-4" />
-                  <span>Log out</span>
+                  <span>Keluar</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -74,7 +74,7 @@ export default function Header() {
             <Button asChild>
               <Link href="/login">
                 <LogIn />
-                Login
+                Masuk
               </Link>
             </Button>
           )}

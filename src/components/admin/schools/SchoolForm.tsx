@@ -17,8 +17,8 @@ import { useToast } from "@/hooks/use-toast";
 import type { School } from "@/lib/types";
 
 const formSchema = z.object({
-  name: z.string().min(3, "School name must be at least 3 characters."),
-  address: z.string().min(5, "Address must be at least 5 characters."),
+  name: z.string().min(3, "Nama sekolah minimal harus 3 karakter."),
+  address: z.string().min(5, "Alamat minimal harus 5 karakter."),
 });
 
 interface SchoolFormProps {
@@ -41,8 +41,8 @@ export function SchoolForm({ school, onFinished }: SchoolFormProps) {
     console.log(values);
     
     toast({
-      title: school ? "School Updated" : "School Created",
-      description: `The school "${values.name}" has been saved successfully.`,
+      title: school ? "Sekolah Diperbarui" : "Sekolah Dibuat",
+      description: `Sekolah "${values.name}" telah berhasil disimpan.`,
     });
     
     onFinished();
@@ -56,9 +56,9 @@ export function SchoolForm({ school, onFinished }: SchoolFormProps) {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>School Name</FormLabel>
+              <FormLabel>Nama Sekolah</FormLabel>
               <FormControl>
-                <Input placeholder="e.g. SMA Negeri 1 Harapan Bangsa" {...field} />
+                <Input placeholder="contoh: SMA Negeri 1 Harapan Bangsa" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -69,9 +69,9 @@ export function SchoolForm({ school, onFinished }: SchoolFormProps) {
           name="address"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Address</FormLabel>
+              <FormLabel>Alamat</FormLabel>
               <FormControl>
-                <Input placeholder="e.g. Jl. Pendidikan No. 1" {...field} />
+                <Input placeholder="contoh: Jl. Pendidikan No. 1" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -79,7 +79,7 @@ export function SchoolForm({ school, onFinished }: SchoolFormProps) {
         />
         <div className="flex justify-end pt-4">
           <Button type="submit">
-            {form.formState.isSubmitting ? "Saving..." : "Save changes"}
+            {form.formState.isSubmitting ? "Menyimpan..." : "Simpan perubahan"}
           </Button>
         </div>
       </form>

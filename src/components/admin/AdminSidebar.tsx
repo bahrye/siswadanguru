@@ -7,7 +7,6 @@ import {
   Building,
   LayoutDashboard,
   LogOut,
-  Users,
 } from "lucide-react";
 import {
   Sidebar,
@@ -34,15 +33,15 @@ export function AdminSidebar() {
     try {
       await auth.signOut();
       toast({
-        title: "Signed Out",
-        description: "You have been successfully signed out.",
+        title: "Berhasil Keluar",
+        description: "Anda telah berhasil keluar.",
       });
       router.push("/");
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Sign Out Failed",
-        description: "An error occurred while signing out.",
+        title: "Gagal Keluar",
+        description: "Terjadi kesalahan saat keluar.",
       });
     }
   };
@@ -50,12 +49,12 @@ export function AdminSidebar() {
   const menuItems = [
     {
       href: "/admin/dashboard",
-      label: "Dashboard",
+      label: "Dasbor",
       icon: LayoutDashboard,
     },
     {
       href: "/admin/schools",
-      label: "Schools",
+      label: "Sekolah",
       icon: Building,
     },
   ];
@@ -103,9 +102,9 @@ export function AdminSidebar() {
         )}
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={handleSignOut} tooltip="Log Out">
+            <SidebarMenuButton onClick={handleSignOut} tooltip="Keluar">
               <LogOut />
-              <span>Log Out</span>
+              <span>Keluar</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

@@ -23,7 +23,7 @@ export const columns: ColumnDef<School>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          School Name
+          Nama Sekolah
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -32,7 +32,7 @@ export const columns: ColumnDef<School>[] = [
   },
   {
     accessorKey: "address",
-    header: "Address",
+    header: "Alamat",
   },
   {
     accessorKey: "studentCount",
@@ -42,7 +42,7 @@ export const columns: ColumnDef<School>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Students
+          Siswa
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       </div>
@@ -57,7 +57,7 @@ export const columns: ColumnDef<School>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Teachers
+          Guru
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       </div>
@@ -73,25 +73,25 @@ export const columns: ColumnDef<School>[] = [
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
+              <span className="sr-only">Buka menu</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuLabel>Aksi</DropdownMenuLabel>
             <DropdownMenuItem asChild>
-              <Link href={`/admin/schools/${school.id}`}>View Details</Link>
+              <Link href={`/admin/schools/${school.id}`}>Lihat Detail</Link>
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={() => alert(`Editing ${school.name}`)}
+              onClick={() => alert(`Mengedit ${school.name}`)}
             >
-              Edit School
+              Edit Sekolah
             </DropdownMenuItem>
             <DropdownMenuItem
               className="text-destructive focus:text-destructive"
-              onClick={() => alert(`Deleting ${school.name}`)}
+              onClick={() => alert(`Menghapus ${school.name}`)}
             >
-              Delete School
+              Hapus Sekolah
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

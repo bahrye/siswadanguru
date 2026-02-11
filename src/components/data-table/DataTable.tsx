@@ -65,7 +65,7 @@ export function DataTable<TData, TValue>({
     <div className="space-y-4">
         <div className="flex items-center justify-between">
             <Input
-            placeholder={`Filter by ${filterColumnId}...`}
+            placeholder={`Saring berdasarkan ${filterColumnId}...`}
             value={(table.getColumn(filterColumnId)?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
                 table.getColumn(filterColumnId)?.setFilterValue(event.target.value)
@@ -111,7 +111,7 @@ export function DataTable<TData, TValue>({
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No results.
+                  Tidak ada hasil.
                 </TableCell>
               </TableRow>
             )}

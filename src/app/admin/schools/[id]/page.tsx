@@ -39,23 +39,23 @@ export default async function SchoolDetailPage({ params }: { params: { id: strin
             
             <Card>
                 <CardHeader>
-                    <CardTitle>School Overview</CardTitle>
+                    <CardTitle>Ringkasan Sekolah</CardTitle>
                     <CardDescription>
-                        Key statistics for {school.name}.
+                        Statistik utama untuk {school.name}.
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="grid gap-4 md:grid-cols-2">
                     <div className="flex items-center space-x-4 rounded-md border p-4">
                         <Users className="h-8 w-8 text-primary" />
                         <div className="flex-1 space-y-1">
-                        <p className="text-sm font-medium leading-none">Total Students</p>
+                        <p className="text-sm font-medium leading-none">Total Siswa</p>
                         <p className="text-2xl font-semibold font-headline">{students.length}</p>
                         </div>
                     </div>
                      <div className="flex items-center space-x-4 rounded-md border p-4">
                         <School className="h-8 w-8 text-primary" />
                         <div className="flex-1 space-y-1">
-                        <p className="text-sm font-medium leading-none">Total Teachers</p>
+                        <p className="text-sm font-medium leading-none">Total Guru</p>
                         <p className="text-2xl font-semibold font-headline">{teachers.length}</p>
                         </div>
                     </div>
@@ -65,18 +65,18 @@ export default async function SchoolDetailPage({ params }: { params: { id: strin
             <Tabs defaultValue="students" className="space-y-4">
                 <TabsList>
                     <TabsTrigger value="students">
-                        <Users className="mr-2 h-4 w-4"/> Students
+                        <Users className="mr-2 h-4 w-4"/> Siswa
                     </TabsTrigger>
                     <TabsTrigger value="teachers">
-                        <School className="mr-2 h-4 w-4"/> Teachers
+                        <School className="mr-2 h-4 w-4"/> Guru
                     </TabsTrigger>
                 </TabsList>
                 <TabsContent value="students" className="space-y-4">
                     <Card>
                         <CardHeader>
-                            <CardTitle>Student Management</CardTitle>
+                            <CardTitle>Manajemen Siswa</CardTitle>
                              <CardDescription>
-                                Add, edit, or remove student records for this school.
+                                Tambah, edit, atau hapus data siswa untuk sekolah ini.
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
@@ -87,9 +87,9 @@ export default async function SchoolDetailPage({ params }: { params: { id: strin
                 <TabsContent value="teachers" className="space-y-4">
                      <Card>
                         <CardHeader>
-                            <CardTitle>Teacher Management</CardTitle>
+                            <CardTitle>Manajemen Guru</CardTitle>
                              <CardDescription>
-                                Add, edit, or remove teacher records for this school.
+                                Tambah, edit, atau hapus data guru untuk sekolah ini.
                             </CardDescription>
                         </CardHeader>
                         <CardContent>

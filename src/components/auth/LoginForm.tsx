@@ -22,10 +22,10 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 
 const formSchema = z.object({
-  email: z.string().email({ message: "Please enter a valid email address." }),
+  email: z.string().email({ message: "Silakan masukkan alamat email yang valid." }),
   password: z
     .string()
-    .min(6, { message: "Password must be at least 6 characters." }),
+    .min(6, { message: "Kata sandi minimal harus 6 karakter." }),
 });
 
 export function LoginForm() {
@@ -47,15 +47,22 @@ export function LoginForm() {
     try {
       await signInWithEmailAndPassword(auth, values.email, values.password);
       toast({
-        title: "Login Successful",
-        description: "Welcome back! Redirecting you to the dashboard.",
+        title: "Login Berhasil",
+        description: "Selamat datang kembali! Mengarahkan Anda ke dasbor.",
       });
       router.push("/admin/dashboard");
     } catch (error: any) {
+      let errorMessage = "Terjadi kesalahan yang tidak diketahui.";
+      if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+          errorMessage = "Email atau kata sandi salah. Silakan coba lagi.";
+      } else if (error.message) {
+          errorMessage = error.message;
+      }
+      
       toast({
         variant: "destructive",
-        title: "Login Failed",
-        description: error.message || "An unknown error occurred.",
+        title: "Login Gagal",
+        description: errorMessage,
       });
     } finally {
       setIsLoading(false);
@@ -70,10 +77,10 @@ export function LoginForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email Address</FormLabel>
+              <FormLabel>Alamat Email</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="admin@example.com"
+                  placeholder="admin@contoh.com"
                   {...field}
                   disabled={isLoading}
                 />
@@ -87,7 +94,7 @@ export function LoginForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>Kata Sandi</FormLabel>
               <FormControl>
                 <div className="relative">
                   <Input
@@ -118,7 +125,7 @@ export function LoginForm() {
         />
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Sign In
+          Masuk
         </Button>
       </form>
     </Form>

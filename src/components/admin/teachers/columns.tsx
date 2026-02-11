@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { format } from 'date-fns';
+import { id } from 'date-fns/locale';
 
 export const columns: ColumnDef<Teacher>[] = [
   {
@@ -22,7 +23,7 @@ export const columns: ColumnDef<Teacher>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Teacher Name
+          Nama Guru
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -31,14 +32,14 @@ export const columns: ColumnDef<Teacher>[] = [
   },
   {
     accessorKey: "subject",
-    header: "Subject",
+    header: "Mata Pelajaran",
   },
   {
     accessorKey: "hireDate",
-    header: "Hire Date",
+    header: "Tanggal Direkrut",
     cell: ({ row }) => {
         const date = new Date(row.getValue("hireDate"));
-        return format(date, "dd MMMM yyyy");
+        return format(date, "dd MMMM yyyy", { locale: id });
     },
   },
   {
@@ -50,22 +51,22 @@ export const columns: ColumnDef<Teacher>[] = [
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
+              <span className="sr-only">Buka menu</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuLabel>Aksi</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => alert(`Editing ${teacher.name}`)}
+              onClick={() => alert(`Mengedit ${teacher.name}`)}
             >
-              Edit Teacher
+              Edit Guru
             </DropdownMenuItem>
             <DropdownMenuItem
               className="text-destructive focus:text-destructive"
-              onClick={() => alert(`Deleting ${teacher.name}`)}
+              onClick={() => alert(`Menghapus ${teacher.name}`)}
             >
-              Delete Teacher
+              Hapus Guru
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

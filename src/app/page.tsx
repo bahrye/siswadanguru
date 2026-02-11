@@ -27,9 +27,9 @@ export default function Home() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background to-black/30" />
             <div className="relative container mx-auto px-4 md:px-6 h-full flex flex-col justify-center text-primary-foreground">
-                <h1 className="font-headline text-4xl md:text-5xl font-bold">Welcome to EduCloud Manager</h1>
+                <h1 className="font-headline text-4xl md:text-5xl font-bold">Selamat Datang di Manajer EduCloud</h1>
                 <p className="mt-4 max-w-2xl text-lg text-primary-foreground/80">
-                    The centralized solution for managing school, student, and teacher data across multiple institutions.
+                    Solusi terpusat untuk mengelola data sekolah, siswa, dan guru di berbagai institusi.
                 </p>
             </div>
         </section>
@@ -37,21 +37,21 @@ export default function Home() {
         <section className="container mx-auto px-4 md:px-6 py-12">
           <div className="grid gap-6 md:grid-cols-3">
             <StatCard
-              title="Total Schools"
+              title="Total Sekolah"
               value={mockSchools.length.toString()}
-              description="Across all regions"
+              description="Di semua wilayah"
               Icon={Building}
             />
             <StatCard
-              title="Total Students"
+              title="Total Siswa"
               value={totalStudents.toLocaleString('id-ID')}
-              description="Enrolled in all schools"
+              description="Terdaftar di semua sekolah"
               Icon={Users}
             />
             <StatCard
-              title="Total Teachers"
+              title="Total Guru"
               value={totalTeachers.toLocaleString('id-ID')}
-              description="Educating across all schools"
+              description="Mengajar di semua sekolah"
               Icon={School}
             />
           </div>
@@ -60,7 +60,7 @@ export default function Home() {
         <section className="container mx-auto px-4 md:px-6 pb-12">
           <Card>
             <CardHeader>
-              <CardTitle>School Directory</CardTitle>
+              <CardTitle>Direktori Sekolah</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -74,7 +74,7 @@ export default function Home() {
                         <Badge variant="outline">{school.studentCount.toLocaleString('id-ID')} Siswa</Badge>
                         <Badge variant="outline">{school.teacherCount.toLocaleString('id-ID')} Guru</Badge>
                          <Button asChild variant="outline" size="sm">
-                             <Link href="/login">View Details</Link>
+                             <Link href="/login">Lihat Detail</Link>
                          </Button>
                     </div>
                   </div>
@@ -86,7 +86,7 @@ export default function Home() {
       </main>
       <footer className="py-6 border-t">
           <div className="container mx-auto px-4 md:px-6 text-center text-sm text-muted-foreground">
-              © {new Date().getFullYear()} EduCloud Manager. All rights reserved.
+              © {new Date().getFullYear()} Manajer EduCloud. Hak cipta dilindungi undang-undang.
           </div>
       </footer>
     </div>

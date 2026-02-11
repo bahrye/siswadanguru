@@ -27,14 +27,14 @@ export function SchoolClientPage({ data }: { data: School[] }) {
           <DialogTrigger asChild>
             <Button>
               <PlusCircle className="mr-2 h-4 w-4" />
-              Add New School
+              Tambah Sekolah Baru
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle>Add New School</DialogTitle>
+              <DialogTitle>Tambah Sekolah Baru</DialogTitle>
               <DialogDescription>
-                Enter the details of the new school. Click save when you're done.
+                Masukkan detail sekolah baru. Klik simpan jika sudah selesai.
               </DialogDescription>
             </DialogHeader>
             <SchoolForm onFinished={() => setCreateDialogOpen(false)} />

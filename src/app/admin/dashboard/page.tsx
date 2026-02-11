@@ -17,19 +17,19 @@ export default function AdminDashboardPage() {
   return (
     <div className="flex-1 space-y-8 p-4 md:p-8 pt-6">
       <div className="flex items-center justify-between space-y-2">
-        <h2 className="text-3xl font-bold tracking-tight font-headline">Admin Dashboard</h2>
+        <h2 className="text-3xl font-bold tracking-tight font-headline">Dasbor Admin</h2>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <StatCard title="Total Schools" value={mockSchools.length.toString()} Icon={Building} description="Managed institutions" />
-        <StatCard title="Total Students" value={totalStudents.toLocaleString('id-ID')} Icon={Users} description="Across all schools" />
-        <StatCard title="Total Teachers" value={totalTeachers.toLocaleString('id-ID')} Icon={School} description="Faculty members" />
+        <StatCard title="Total Sekolah" value={mockSchools.length.toString()} Icon={Building} description="Institusi yang dikelola" />
+        <StatCard title="Total Siswa" value={totalStudents.toLocaleString('id-ID')} Icon={Users} description="Di semua sekolah" />
+        <StatCard title="Total Guru" value={totalTeachers.toLocaleString('id-ID')} Icon={School} description="Anggota fakultas" />
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <Card className="col-span-4">
             <CardHeader>
-                <CardTitle>Student Distribution per School</CardTitle>
+                <CardTitle>Distribusi Siswa per Sekolah</CardTitle>
             </CardHeader>
             <CardContent className="pl-2">
                 <ResponsiveContainer width="100%" height={350}>
@@ -55,36 +55,36 @@ export default function AdminDashboardPage() {
                                 borderRadius: "var(--radius)",
                             }}
                         />
-                        <Bar dataKey="students" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="students" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} name="Siswa" />
                     </BarChart>
                 </ResponsiveContainer>
             </CardContent>
         </Card>
         <Card className="col-span-4 lg:col-span-3">
             <CardHeader>
-                <CardTitle>Recent Activities</CardTitle>
+                <CardTitle>Aktivitas Terkini</CardTitle>
             </CardHeader>
             <CardContent>
                 <div className="space-y-4">
                     <div className="flex items-center">
                         <Users className="h-5 w-5 mr-4 text-green-500" />
                         <div className="flex-1">
-                            <p className="text-sm">New student 'Budi Santoso' added to SMA N 1.</p>
-                            <p className="text-xs text-muted-foreground">2 hours ago</p>
+                            <p className="text-sm">Siswa baru 'Budi Santoso' ditambahkan ke SMA N 1.</p>
+                            <p className="text-xs text-muted-foreground">2 jam yang lalu</p>
                         </div>
                     </div>
                      <div className="flex items-center">
                         <Building className="h-5 w-5 mr-4 text-blue-500" />
                         <div className="flex-1">
-                            <p className="text-sm">School 'SMK Bisa Berkarya' profile updated.</p>
-                            <p className="text-xs text-muted-foreground">1 day ago</p>
+                            <p className="text-sm">Profil sekolah 'SMK Bisa Berkarya' diperbarui.</p>
+                            <p className="text-xs text-muted-foreground">1 hari yang lalu</p>
                         </div>
                     </div>
                      <div className="flex items-center">
                         <School className="h-5 w-5 mr-4 text-purple-500" />
                         <div className="flex-1">
-                            <p className="text-sm">New teacher 'Dr. Ahmad Fauzi' added to SMA N 1.</p>
-                            <p className="text-xs text-muted-foreground">3 days ago</p>
+                            <p className="text-sm">Guru baru 'Dr. Ahmad Fauzi' ditambahkan ke SMA N 1.</p>
+                            <p className="text-xs text-muted-foreground">3 hari yang lalu</p>
                         </div>
                     </div>
                 </div>
