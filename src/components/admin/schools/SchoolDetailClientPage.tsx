@@ -16,6 +16,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { StudentImportDialog } from "@/components/admin/students/StudentImportDialog";
 import { useToast } from "@/hooks/use-toast";
+import { StudentExportDialog } from "@/components/admin/students/StudentExportDialog";
 
 
 export function SchoolDetailClientPage({ schoolId }: { schoolId: string }) {
@@ -24,6 +25,7 @@ export function SchoolDetailClientPage({ schoolId }: { schoolId: string }) {
     const [teachers, setTeachers] = useState<Teacher[]>([]);
     const [loading, setLoading] = useState(true);
     const [isImportOpen, setImportOpen] = useState(false);
+    const [isExportOpen, setExportOpen] = useState(false);
     const router = useRouter();
     const { toast } = useToast();
 
@@ -162,7 +164,7 @@ export function SchoolDetailClientPage({ schoolId }: { schoolId: string }) {
                                     <Upload className="mr-2 h-4 w-4" />
                                     Import
                                 </Button>
-                                <Button variant="outline" className="w-full sm:w-auto">
+                                <Button variant="outline" className="w-full sm:w-auto" onClick={() => setExportOpen(true)}>
                                     <Download className="mr-2 h-4 w-4" />
                                     Export
                                 </Button>
@@ -188,6 +190,7 @@ export function SchoolDetailClientPage({ schoolId }: { schoolId: string }) {
                 </TabsContent>
             </Tabs>
             <StudentImportDialog isOpen={isImportOpen} onOpenChange={setImportOpen} schoolId={schoolId} />
+            <StudentExportDialog isOpen={isExportOpen} onOpenChange={setExportOpen} students={students} schoolName={school.name} />
         </div>
     )
 }
