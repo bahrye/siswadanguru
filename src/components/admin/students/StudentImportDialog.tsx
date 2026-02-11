@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, FileDown } from "lucide-react";
-import Papa from "papaparse";
+import * as XLSX from "xlsx";
 
 interface StudentImportDialogProps {
     isOpen: boolean;
@@ -38,67 +38,86 @@ export function StudentImportDialog({ isOpen, onOpenChange, schoolId }: StudentI
     };
 
     const downloadTemplate = () => {
-        const csv = Papa.unparse([CSV_HEADERS]);
-        const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
-        const link = document.createElement("a");
-        const url = URL.createObjectURL(blob);
-        link.setAttribute("href", url);
-        link.setAttribute("download", "template_import_siswa.csv");
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        const worksheet = XLSX.utils.json_to_sheet([{}], { header: CSV_HEADERS });
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Data Siswa");
+        
+        // Atur lebar kolom agar lebih mudah dibaca
+        const colWidths = CSV_HEADERS.map(header => ({ wch: header.length + 5 }));
+        worksheet["!cols"] = colWidths;
+        
+        XLSX.writeFile(workbook, "template_import_siswa.xlsx");
+        toast({
+            title: "Template Diunduh",
+            description: "Silakan isi file template_import_siswa.xlsx dengan data siswa.",
+        });
     };
 
     const handleValidate = () => {
         if (!file) {
-            toast({ variant: "destructive", title: "File tidak ditemukan", description: "Silakan pilih file untuk divalidasi." });
+            toast({ variant: "destructive", title: "File tidak ditemukan", description: "Silakan pilih file Excel untuk divalidasi." });
             return;
         }
         setIsValidating(true);
         setValidationErrors([]);
         setValidatedData([]);
 
-        Papa.parse(file, {
-            header: true,
-            skipEmptyLines: true,
-            complete: (results) => {
-                const fileHeaders = results.meta.fields;
-                const missingHeaders = CSV_HEADERS.filter(h => !fileHeaders?.includes(h));
+        const reader = new FileReader();
+        reader.onload = (e: ProgressEvent<FileReader>) => {
+            try {
+                if (!e.target?.result) {
+                    throw new Error("Gagal membaca file.");
+                }
+                const data = e.target.result;
+                const workbook = XLSX.read(data, { type: 'array' });
+                const sheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[sheetName];
+
+                // Cek header dengan membaca baris pertama
+                const headers = XLSX.utils.sheet_to_json(worksheet, { header: 1, range: 0 })[0] as string[];
+                const missingHeaders = CSV_HEADERS.filter(h => !headers?.includes(h));
+
                 if (missingHeaders.length > 0) {
                      setValidationErrors([`Header kolom hilang atau salah nama: ${missingHeaders.join(", ")}`]);
                      setIsValidating(false);
                      return;
                 }
                 
+                const dataAsObjects = XLSX.utils.sheet_to_json(worksheet);
                 const errors: string[] = [];
-                const data = results.data as any[];
 
-                // Placeholder for detailed validation logic based on your rules.
-                data.forEach((row: any, index) => {
-                   if (row["NIK"] && typeof row["NIK"] === 'string' && row["NIK"].startsWith("'")) {
-                       row["NIK"] = row["NIK"].substring(1);
+                const processedData = dataAsObjects.map((row: any, index) => {
+                   // Bersihkan NIK dari tanda kutip dan pastikan itu string
+                   if (row["NIK"]) {
+                       let nik = String(row["NIK"]);
+                       if (nik.startsWith("'")) {
+                           nik = nik.substring(1);
+                       }
+                       row["NIK"] = nik;
                    }
+
                    if (!row["Nama Lengkap"]) {
                        errors.push(`Baris ${index + 2}: Nama Lengkap tidak boleh kosong.`);
                    }
+                   
+                   return row;
                 });
 
-
                 if (errors.length > 0) {
-                    setValidationErrors(errors.slice(0, 5)); // Show first 5 errors
-                    toast({ variant: "destructive", title: "Validasi Gagal", description: "Terdapat kesalahan pada file Anda." });
+                    setValidationErrors(errors.slice(0, 5));
+                    toast({ variant: "destructive", title: "Validasi Gagal", description: "Terdapat kesalahan pada file Excel Anda." });
                 } else {
-                    toast({ title: "Validasi Berhasil", description: `Semua ${data.length} baris data valid dan siap diimpor.` });
-                    setValidatedData(data);
+                    toast({ title: "Validasi Berhasil", description: `Semua ${processedData.length} baris data valid dan siap diimpor.` });
+                    setValidatedData(processedData);
                 }
 
                 setIsValidating(false);
-            },
-            error: (error: any) => {
-                setValidationErrors([`Gagal mem-parsing file: ${error.message}`]);
+            } catch (error: any) {
+                setValidationErrors([`Gagal memproses file Excel: ${error.message}`]);
                 setIsValidating(false);
             }
-        });
+        };
+        reader.readAsArrayBuffer(file);
     };
 
     const handleImport = async () => {
@@ -108,8 +127,6 @@ export function StudentImportDialog({ isOpen, onOpenChange, schoolId }: StudentI
         }
         setIsImporting(true);
         
-        // This is a placeholder for the actual Firestore import logic.
-        // You would typically use a batched write to import the data efficiently.
         console.log("Importing data for school:", schoolId, validatedData);
         
         toast({ title: "Import Dimulai", description: `${validatedData.length} data siswa sedang diimpor.`});
@@ -118,7 +135,6 @@ export function StudentImportDialog({ isOpen, onOpenChange, schoolId }: StudentI
           setIsImporting(false);
           onOpenChange(false);
           toast({ title: "Import Berhasil", description: "Data siswa telah berhasil ditambahkan."});
-          // Here you would also trigger a re-fetch of the student list.
         }, 2000);
     };
     
@@ -139,7 +155,7 @@ export function StudentImportDialog({ isOpen, onOpenChange, schoolId }: StudentI
         }}>
             <DialogContent className="sm:max-w-lg">
                 <DialogHeader>
-                    <DialogTitle>Import Data Siswa dari Excel/CSV</DialogTitle>
+                    <DialogTitle>Import Data Siswa dari Excel</DialogTitle>
                     <DialogDescription>
                         Ikuti langkah-langkah berikut untuk mengimpor data siswa secara massal.
                     </DialogDescription>
@@ -148,24 +164,20 @@ export function StudentImportDialog({ isOpen, onOpenChange, schoolId }: StudentI
                     <div className="space-y-2">
                         <p className="font-medium">Langkah 1: Unduh dan Isi Template</p>
                         <p className="text-xs text-muted-foreground">
-                            Unduh template, lalu buka dan isi data siswa menggunakan Microsoft Excel atau aplikasi spreadsheet lainnya.
+                            Unduh template Excel, lalu buka dan isi data siswa menggunakan Microsoft Excel atau aplikasi spreadsheet lainnya.
                         </p>
                         <Button variant="outline" onClick={downloadTemplate} className="w-full">
                             <FileDown className="mr-2 h-4 w-4" />
-                            Unduh Template Import
+                            Unduh Template Excel
                         </Button>
                     </div>
 
                     <div className="space-y-2">
-                        <p className="font-medium">Langkah 2: Simpan sebagai CSV</p>
-                        <p className="text-xs text-muted-foreground">
-                            Setelah selesai, pastikan Anda menyimpan file sebagai <span className="font-semibold text-foreground">CSV (Comma delimited)</span>. Di Excel, gunakan menu `File &gt; Save As`.
+                        <p className="font-medium">Langkah 2: Unggah File Excel Anda</p>
+                         <p className="text-xs text-muted-foreground">
+                            Unggah file yang sudah Anda isi untuk divalidasi oleh sistem.
                         </p>
-                    </div>
-
-                    <div className="space-y-2">
-                        <p className="font-medium">Langkah 3: Unggah File CSV</p>
-                        <Input id="file-upload" type="file" accept=".csv" onChange={handleFileChange} className="file:text-foreground"/>
+                        <Input id="file-upload" type="file" accept=".xlsx, .xls" onChange={handleFileChange} className="file:text-foreground"/>
                     </div>
                 
                     {validationErrors.length > 0 && (
