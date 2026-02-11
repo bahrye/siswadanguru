@@ -5,7 +5,6 @@ import Link from "next/link";
 import { MoreHorizontal, Loader2 } from "lucide-react";
 
 import type { School } from "@/lib/types";
-import { deleteSchool } from "@/app/admin/schools/actions";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -35,6 +34,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { SchoolForm } from "./SchoolForm";
 import { useToast } from "@/hooks/use-toast";
+import { deleteDoc, doc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 
 interface SchoolActionsProps {
@@ -49,21 +50,23 @@ export function SchoolActions({ school }: SchoolActionsProps) {
 
   const handleDelete = async () => {
     setIsDeleting(true);
-    const result = await deleteSchool(school.id);
-    if (result.success) {
+    try {
+      await deleteDoc(doc(db, "schools", school.id));
       toast({
         title: "Sekolah Dihapus",
         description: `Sekolah "${school.name}" telah berhasil dihapus.`,
       });
       setDeleteDialogOpen(false);
-    } else {
-      toast({
+    } catch (error) {
+       const errorMessage = error instanceof Error ? error.message : "Terjadi kesalahan yang tidak diketahui.";
+       toast({
         variant: "destructive",
         title: "Gagal Menghapus",
-        description: result.message,
+        description: errorMessage,
       });
+    } finally {
+      setIsDeleting(false);
     }
-    setIsDeleting(false);
   };
 
   return (

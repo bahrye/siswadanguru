@@ -1,43 +1,25 @@
 'use server';
 
 import { z } from 'zod';
-import { collection, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
 import { revalidatePath } from 'next/cache';
 import { schoolFormSchema } from '@/lib/schemas';
 
+// Fungsi-fungsi ini sengaja dikosongkan karena logikanya telah dipindahkan
+// ke komponen sisi klien untuk menangani autentikasi Firebase dengan benar.
+// Server Actions tidak membawa konteks auth klien secara default, menyebabkan
+// error 'permission-denied' di Firestore.
+
 export async function createSchool(values: z.infer<typeof schoolFormSchema>) {
-  try {
-    await addDoc(collection(db, 'schools'), {
-      ...values,
-      studentCount: 0,
-      teacherCount: 0,
-    });
-    revalidatePath('/admin/schools');
-    return { success: true, message: 'Sekolah berhasil dibuat.' };
-  } catch (error) {
-    return { success: false, message: 'Gagal membuat sekolah.' };
-  }
+  // Logika dipindahkan ke SchoolForm.tsx
+  return { success: false, message: 'Fungsi ini tidak lagi digunakan.' };
 }
 
 export async function updateSchool(id: string, values: z.infer<typeof schoolFormSchema>) {
-   try {
-    const schoolRef = doc(db, 'schools', id);
-    await updateDoc(schoolRef, values);
-    revalidatePath('/admin/schools');
-    revalidatePath(`/admin/schools/${id}`);
-    return { success: true, message: 'Sekolah berhasil diperbarui.' };
-  } catch (error) {
-    return { success: false, message: 'Gagal memperbarui sekolah.' };
-  }
+  // Logika dipindahkan ke SchoolForm.tsx
+   return { success: false, message: 'Fungsi ini tidak lagi digunakan.' };
 }
 
 export async function deleteSchool(id: string) {
-  try {
-    await deleteDoc(doc(db, 'schools', id));
-    revalidatePath('/admin/schools');
-    return { success: true, message: 'Sekolah berhasil dihapus.' };
-  } catch (error) {
-    return { success: false, message: 'Gagal menghapus sekolah.' };
-  }
+  // Logika dipindahkan ke SchoolActions.tsx
+  return { success: false, message: 'Fungsi ini tidak lagi digunakan.' };
 }

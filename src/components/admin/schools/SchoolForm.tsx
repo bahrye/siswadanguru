@@ -15,10 +15,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import type { School } from "@/lib/types";
-import { createSchool, updateSchool } from "@/app/admin/schools/actions";
 import { schoolFormSchema } from "@/lib/schemas";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 
 interface SchoolFormProps {
@@ -41,25 +42,32 @@ export function SchoolForm({ school, onFinished }: SchoolFormProps) {
   async function onSubmit(values: z.infer<typeof schoolFormSchema>) {
     setIsSubmitting(true);
     
-    const result = school 
-      ? await updateSchool(school.id, values) 
-      : await createSchool(values);
-
-    if (result.success) {
+    try {
+      if (school) {
+        const schoolRef = doc(db, 'schools', school.id);
+        await updateDoc(schoolRef, values);
+      } else {
+        await addDoc(collection(db, 'schools'), {
+          ...values,
+          studentCount: 0,
+          teacherCount: 0,
+        });
+      }
       toast({
         title: school ? "Sekolah Diperbarui" : "Sekolah Dibuat",
         description: `Sekolah "${values.name}" telah berhasil disimpan.`,
       });
       onFinished();
-    } else {
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Terjadi kesalahan yang tidak diketahui.";
       toast({
         variant: "destructive",
         title: "Operasi Gagal",
-        description: result.message,
+        description: errorMessage,
       });
+    } finally {
+      setIsSubmitting(false);
     }
-
-    setIsSubmitting(false);
   }
 
   return (
