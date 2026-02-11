@@ -17,9 +17,9 @@ interface StudentImportDialogProps {
 }
 
 const CSV_HEADERS = [
-    "No", "Nama Lengkap", "NISN", "NIK", "Tempat Lahir", "Tanggal Lahir", 
-    "Tingkat - Rombel", "Umur", "Status", "Jenis Kelamin", "Alamat", 
-    "No Telepon", "Kebutuhan Khusus", "Disabilitas", "Nomor KIP/PIP", 
+    "No", "Nama Lengkap", "NISN", "NIK", "Tempat Lahir", "Tanggal Lahir",
+    "Tingkat - Rombel", "Umur", "Status", "Jenis Kelamin", "Alamat",
+    "No Telepon", "Kebutuhan Khusus", "Disabilitas", "Nomor KIP/PIP",
     "Nama Ayah Kandung", "Nama Ibu Kandung", "Nama Wali"
 ];
 
