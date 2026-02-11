@@ -61,14 +61,29 @@ export function LoginForm() {
       }
       router.push("/admin/dashboard");
     } catch (error: any) {
-      let errorMessage = "Terjadi kesalahan yang tidak diketahui.";
+      let errorMessage = "Terjadi kesalahan yang tidak diketahui. Silakan coba lagi.";
        if (isSignUp) {
-          if (error.code === 'auth/email-already-in-use') {
-              errorMessage = "Email ini sudah digunakan oleh akun lain.";
+          switch(error.code) {
+            case 'auth/email-already-in-use':
+              errorMessage = "Email ini sudah digunakan oleh akun lain. Silakan coba masuk.";
+              break;
+            case 'auth/invalid-email':
+              errorMessage = "Alamat email tidak valid. Silakan periksa kembali.";
+              break;
+            case 'auth/weak-password':
+              errorMessage = "Kata sandi terlalu lemah. Harap gunakan kata sandi yang lebih kuat.";
+              break;
+            case 'auth/operation-not-allowed':
+              errorMessage = "Pendaftaran dengan email dan kata sandi belum diaktifkan oleh admin.";
+              break;
+            default:
+              errorMessage = `Terjadi kesalahan tak terduga. Coba lagi nanti.`;
           }
       } else {
-        if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+        if (error.code === 'auth/invalid-credential') {
             errorMessage = "Email atau kata sandi salah. Silakan coba lagi.";
+        } else {
+            errorMessage = `Terjadi kesalahan tak terduga. Coba lagi nanti.`;
         }
       }
       
