@@ -1,3 +1,34 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-dashboard",
+      "description": "A modern classroom with students working on laptops.",
+      "imageUrl": "https://images.unsplash.com/photo-1635766828498-49dec8c0cc56?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjbGFzc3Jvb20lMjB0ZWNobm9sb2d5fGVufDB8fHx8MTc3MDgyNDM3OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "classroom technology"
+    },
+    {
+      "id": "school-logo-1",
+      "description": "Abstract logo for a school.",
+      "imageUrl": "https://images.unsplash.com/photo-1728206348193-9b5ae74a7d32?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzY2hvb2wlMjBsb2dvfGVufDB8fHx8MTc3MDgyNDM3OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "school logo"
+    },
+    {
+      "id": "school-logo-2",
+      "description": "Abstract logo for a school.",
+      "imageUrl": "https://images.unsplash.com/photo-1762330918617-e135c98d40fe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxzY2hvb2wlMjBsb2dvfGVufDB8fHx8MTc3MDgyNDM3OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "school logo"
+    },
+    {
+      "id": "school-logo-3",
+      "description": "Abstract logo for a school.",
+      "imageUrl": "https://images.unsplash.com/photo-1587987501183-33e43fdde781?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzY2hvb2wlMjBsb2dvfGVufDB8fHx8MTc3MDgyNDM3OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "school logo"
+    },
+    {
+      "id": "admin-avatar",
+      "description": "An avatar for the admin user.",
+      "imageUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NzA4MTA2ODh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    }
+  ]
 }
