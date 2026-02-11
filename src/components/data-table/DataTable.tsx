@@ -74,8 +74,8 @@ export function DataTable<TData, TValue>({
             />
             <DataTableViewOptions table={table} />
       </div>
-      <div className="w-full overflow-x-auto">
-        <div className="rounded-md border">
+      <div className="rounded-md border">
+        <div className="relative w-full overflow-auto">
             <Table>
             <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
