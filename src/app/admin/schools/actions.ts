@@ -4,11 +4,7 @@ import { z } from 'zod';
 import { collection, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { revalidatePath } from 'next/cache';
-
-export const schoolFormSchema = z.object({
-  name: z.string().min(3, "Nama sekolah minimal harus 3 karakter."),
-  address: z.string().min(5, "Alamat minimal harus 5 karakter."),
-});
+import { schoolFormSchema } from '@/lib/schemas';
 
 export async function createSchool(values: z.infer<typeof schoolFormSchema>) {
   try {

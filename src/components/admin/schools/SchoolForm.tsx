@@ -15,7 +15,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import type { School } from "@/lib/types";
-import { schoolFormSchema, createSchool, updateSchool } from "@/app/admin/schools/actions";
+import { createSchool, updateSchool } from "@/app/admin/schools/actions";
+import { schoolFormSchema } from "@/lib/schemas";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 
