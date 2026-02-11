@@ -45,7 +45,11 @@ export function StudentForm({ student, schoolId, onFinished }: StudentFormProps)
       nisn: student?.nisn || "",
       nik: student?.nik || "",
       birthPlace: student?.birthPlace || "",
-      dateOfBirth: student?.dateOfBirth ? new Date(student.dateOfBirth) : undefined,
+      dateOfBirth: (() => {
+        if (!student?.dateOfBirth) return undefined;
+        const date = new Date(student.dateOfBirth);
+        return isNaN(date.getTime()) ? undefined : date;
+      })(),
       class: student?.class || "",
       status: student?.status || 'Aktif',
       gender: student?.gender === 'Perempuan' ? 'Perempuan' : 'Laki-laki',
