@@ -134,7 +134,7 @@ export function SchoolDetailClientPage({ schoolId }: { schoolId: string }) {
                              <CardDescription>
                                 Tambah, edit, atau hapus data guru untuk sekolah ini.
                             </CardDescription>
-                        </Header>
+                        </CardHeader>
                         <CardContent>
                             <DataTable columns={teacherColumns} data={teachers} filterColumnId="name" />
                         </CardContent>
