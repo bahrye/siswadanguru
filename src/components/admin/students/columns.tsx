@@ -62,9 +62,12 @@ export const columns: ColumnDef<Student>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => {
+    cell: ({ row, table }) => {
       const student = row.original;
-      return <StudentActions student={student} />;
+      const meta = table.options.meta as {
+        onEdit: (student: Student) => void;
+      };
+      return <StudentActions student={student} onEdit={() => meta.onEdit(student)} />;
     },
   },
 ];

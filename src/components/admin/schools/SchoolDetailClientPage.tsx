@@ -29,6 +29,7 @@ export function SchoolDetailClientPage({ schoolId }: { schoolId: string }) {
     const [isImportOpen, setImportOpen] = useState(false);
     const [isExportOpen, setExportOpen] = useState(false);
     const [isAddStudentOpen, setAddStudentOpen] = useState(false);
+    const [studentToEdit, setStudentToEdit] = useState<Student | null>(null);
     const router = useRouter();
     const { toast } = useToast();
 
@@ -187,7 +188,14 @@ export function SchoolDetailClientPage({ schoolId }: { schoolId: string }) {
                             </div>
                         </CardHeader>
                         <CardContent>
-                           <DataTable columns={studentColumns} data={students} filterColumnId="name" />
+                           <DataTable 
+                             columns={studentColumns} 
+                             data={students} 
+                             filterColumnId="name"
+                             meta={{
+                                onEdit: (student: Student) => setStudentToEdit(student),
+                             }} 
+                           />
                         </CardContent>
                     </Card>
                 </TabsContent>
@@ -207,6 +215,24 @@ export function SchoolDetailClientPage({ schoolId }: { schoolId: string }) {
             </Tabs>
             <StudentImportDialog isOpen={isImportOpen} onOpenChange={setImportOpen} schoolId={schoolId} />
             <StudentExportDialog isOpen={isExportOpen} onOpenChange={setExportOpen} students={students} schoolName={school.name} />
+
+            <Dialog open={!!studentToEdit} onOpenChange={(isOpen) => !isOpen && setStudentToEdit(null)}>
+                <DialogContent className="sm:max-w-3xl flex flex-col max-h-[90vh]">
+                    <DialogHeader>
+                        <DialogTitle>Edit Siswa</DialogTitle>
+                        <DialogDescription>
+                            Ubah detail siswa. Klik simpan jika sudah selesai.
+                        </DialogDescription>
+                    </DialogHeader>
+                    {studentToEdit && (
+                        <StudentForm
+                            student={studentToEdit}
+                            schoolId={schoolId}
+                            onFinished={() => setStudentToEdit(null)}
+                        />
+                    )}
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }

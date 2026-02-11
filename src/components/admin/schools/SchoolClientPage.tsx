@@ -23,6 +23,7 @@ export function SchoolClientPage() {
   const [data, setData] = useState<School[]>([]);
   const [loading, setLoading] = useState(true);
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
+  const [schoolToEdit, setSchoolToEdit] = useState<School | null>(null);
 
   useEffect(() => {
     setLoading(true);
@@ -74,7 +75,32 @@ export function SchoolClientPage() {
           </DialogContent>
         </Dialog>
       </div>
-      <DataTable columns={columns} data={data} filterColumnId="name" />
+
+      <Dialog open={!!schoolToEdit} onOpenChange={(isOpen) => !isOpen && setSchoolToEdit(null)}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Edit Sekolah</DialogTitle>
+            <DialogDescription>
+              Ubah detail sekolah. Klik simpan jika sudah selesai.
+            </DialogDescription>
+          </DialogHeader>
+          {schoolToEdit && (
+            <SchoolForm
+              school={schoolToEdit}
+              onFinished={() => setSchoolToEdit(null)}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+      
+      <DataTable 
+        columns={columns} 
+        data={data} 
+        filterColumnId="name" 
+        meta={{
+          onEdit: (school: School) => setSchoolToEdit(school),
+        }}
+      />
     </>
   );
 }

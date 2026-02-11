@@ -13,13 +13,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -32,15 +25,14 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { doc, writeBatch, increment } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { StudentForm } from "./StudentForm";
 
 
 interface StudentActionsProps {
   student: Student;
+  onEdit: () => void;
 }
 
-export function StudentActions({ student }: StudentActionsProps) {
-  const [isEditDialogOpen, setEditDialogOpen] = useState(false);
+export function StudentActions({ student, onEdit }: StudentActionsProps) {
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const { toast } = useToast();
@@ -75,22 +67,6 @@ export function StudentActions({ student }: StudentActionsProps) {
 
   return (
     <>
-      <Dialog open={isEditDialogOpen} onOpenChange={setEditDialogOpen}>
-        <DialogContent className="sm:max-w-3xl flex flex-col max-h-[90vh]">
-            <DialogHeader>
-                <DialogTitle>Edit Siswa</DialogTitle>
-                <DialogDescription>
-                    Ubah detail siswa. Klik simpan jika sudah selesai.
-                </DialogDescription>
-            </DialogHeader>
-            <StudentForm
-                student={student}
-                schoolId={student.schoolId}
-                onFinished={() => setEditDialogOpen(false)}
-            />
-        </DialogContent>
-      </Dialog>
-
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -119,7 +95,7 @@ export function StudentActions({ student }: StudentActionsProps) {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Aksi</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => setEditDialogOpen(true)}>
+          <DropdownMenuItem onClick={onEdit}>
             Edit Siswa
           </DropdownMenuItem>
           <DropdownMenuSeparator />

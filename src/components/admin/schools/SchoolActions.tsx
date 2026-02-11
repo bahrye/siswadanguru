@@ -16,13 +16,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -32,7 +25,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { SchoolForm } from "./SchoolForm";
 import { useToast } from "@/hooks/use-toast";
 import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
@@ -40,10 +32,10 @@ import { db } from "@/lib/firebase";
 
 interface SchoolActionsProps {
   school: School;
+  onEdit: () => void;
 }
 
-export function SchoolActions({ school }: SchoolActionsProps) {
-  const [isEditDialogOpen, setEditDialogOpen] = useState(false);
+export function SchoolActions({ school, onEdit }: SchoolActionsProps) {
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const { toast } = useToast();
@@ -71,21 +63,6 @@ export function SchoolActions({ school }: SchoolActionsProps) {
 
   return (
     <>
-      <Dialog open={isEditDialogOpen} onOpenChange={setEditDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Edit Sekolah</DialogTitle>
-            <DialogDescription>
-              Ubah detail sekolah. Klik simpan jika sudah selesai.
-            </DialogDescription>
-          </DialogHeader>
-          <SchoolForm
-            school={school}
-            onFinished={() => setEditDialogOpen(false)}
-          />
-        </DialogContent>
-      </Dialog>
-
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -117,7 +94,7 @@ export function SchoolActions({ school }: SchoolActionsProps) {
           <DropdownMenuItem asChild>
             <Link href={`/admin/schools/${school.id}`}>Lihat Detail</Link>
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setEditDialogOpen(true)}>
+          <DropdownMenuItem onClick={onEdit}>
             Edit Sekolah
           </DropdownMenuItem>
           <DropdownMenuSeparator />
