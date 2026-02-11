@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, FileDown } from "lucide-react";
 import * as XLSX from "xlsx";
 import { db } from "@/lib/firebase";
-import { writeBatch, doc, collection, getDoc, increment } from "firebase/firestore";
+import { writeBatch, doc, collection, getDocs, increment } from "firebase/firestore";
 
 interface StudentImportDialogProps {
     isOpen: boolean;
@@ -54,7 +54,7 @@ export function StudentImportDialog({ isOpen, onOpenChange, schoolId }: StudentI
         });
     };
 
-    const handleValidate = () => {
+    const handleValidate = async () => {
         if (!file) {
             toast({ variant: "destructive", title: "File tidak ditemukan", description: "Silakan pilih file Excel untuk divalidasi." });
             return;
@@ -63,75 +63,124 @@ export function StudentImportDialog({ isOpen, onOpenChange, schoolId }: StudentI
         setValidationErrors([]);
         setValidatedData([]);
 
-        const reader = new FileReader();
-        reader.onload = (e: ProgressEvent<FileReader>) => {
-            try {
-                if (!e.target?.result) {
-                    throw new Error("Gagal membaca file.");
-                }
-                const data = e.target.result;
-                const workbook = XLSX.read(data, { type: 'array', cellDates: true });
-                const sheetName = workbook.SheetNames[0];
-                const worksheet = workbook.Sheets[sheetName];
+        try {
+            const studentsRef = collection(db, 'schools', schoolId, 'students');
+            const querySnapshot = await getDocs(studentsRef);
+            const existingNisns = new Set<string>();
+            const existingNiks = new Set<string>();
+            querySnapshot.forEach(doc => {
+                const data = doc.data();
+                if (data.nisn) existingNisns.add(data.nisn);
+                if (data.nik) existingNiks.add(data.nik);
+            });
 
-                const headers = XLSX.utils.sheet_to_json(worksheet, { header: 1, range: 0 })[0] as string[];
-                const missingHeaders = CSV_HEADERS.filter(h => !headers?.includes(h));
+            const reader = new FileReader();
+            reader.onload = (e: ProgressEvent<FileReader>) => {
+                try {
+                    if (!e.target?.result) {
+                        throw new Error("Gagal membaca file.");
+                    }
+                    const data = e.target.result;
+                    const workbook = XLSX.read(data, { type: 'array', cellDates: true });
+                    const sheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[sheetName];
 
-                if (missingHeaders.length > 0) {
-                     setValidationErrors([`Header kolom hilang atau salah nama: ${missingHeaders.join(", ")}`]);
-                     setIsValidating(false);
-                     return;
-                }
-                
-                const dataAsObjects = XLSX.utils.sheet_to_json(worksheet, {raw: false});
-                const errors: string[] = [];
+                    const headers = XLSX.utils.sheet_to_json(worksheet, { header: 1, range: 0 })[0] as string[];
+                    const missingHeaders = CSV_HEADERS.filter(h => !headers?.includes(h));
 
-                const processedData = dataAsObjects.map((row: any, index) => {
-                   if (row["NIK"]) {
-                       let nik = String(row["NIK"]);
-                       if (nik.startsWith("'")) {
-                           nik = nik.substring(1);
+                    if (missingHeaders.length > 0) {
+                        setValidationErrors([`Header kolom hilang atau salah nama: ${missingHeaders.join(", ")}`]);
+                        setIsValidating(false);
+                        return;
+                    }
+                    
+                    const dataAsObjects = XLSX.utils.sheet_to_json(worksheet, {raw: false});
+                    const errors: string[] = [];
+                    const nisnsInFile = new Set<string>();
+                    const niksInFile = new Set<string>();
+
+                    const processedData = dataAsObjects.map((row: any, index) => {
+                       // NIK cleaning and validation
+                       if (row["NIK"]) {
+                           let nik = String(row["NIK"]);
+                           if (nik.startsWith("'")) {
+                               nik = nik.substring(1);
+                           }
+                           row["NIK"] = nik; // Update row with cleaned NIK
+
+                           if (nik) {
+                               if(existingNiks.has(nik)) {
+                                   errors.push(`Baris ${index + 2}: NIK ${nik} sudah terdaftar.`);
+                               } else if (niksInFile.has(nik)) {
+                                   errors.push(`Baris ${index + 2}: NIK ${nik} duplikat di dalam file ini.`);
+                               } else {
+                                   niksInFile.add(nik);
+                               }
+                           }
+                        }
+
+                       // NISN validation
+                       const nisn = row["NISN"] ? String(row["NISN"]) : '';
+                       if (nisn) {
+                           if(existingNisns.has(nisn)) {
+                               errors.push(`Baris ${index + 2}: NISN ${nisn} sudah terdaftar.`);
+                           } else if (nisnsInFile.has(nisn)) {
+                               errors.push(`Baris ${index + 2}: NISN ${nisn} duplikat di dalam file ini.`);
+                           } else {
+                               nisnsInFile.add(nisn);
+                           }
                        }
-                       row["NIK"] = nik;
-                   }
 
-                   if (!row["Nama Lengkap"]) {
-                       errors.push(`Baris ${index + 2}: Nama Lengkap tidak boleh kosong.`);
-                   }
-                   
-                   if (row["Tanggal Lahir"]) {
-                        let dateObj;
-                        if(row["Tanggal Lahir"] instanceof Date) {
-                            dateObj = row["Tanggal Lahir"];
-                        } else {
-                            dateObj = new Date(row["Tanggal Lahir"]);
-                        }
-                        
-                        if (isNaN(dateObj.getTime())) {
-                            errors.push(`Baris ${index + 2}: Format Tanggal Lahir tidak valid.`);
-                        } else {
-                            row["Tanggal Lahir"] = dateObj;
-                        }
-                   }
-                   
-                   return row;
-                });
 
-                if (errors.length > 0) {
-                    setValidationErrors(errors.slice(0, 5));
-                    toast({ variant: "destructive", title: "Validasi Gagal", description: "Terdapat kesalahan pada file Excel Anda." });
-                } else {
-                    toast({ title: "Validasi Berhasil", description: `Semua ${processedData.length} baris data valid dan siap diimpor.` });
-                    setValidatedData(processedData);
+                       if (!row["Nama Lengkap"]) {
+                           errors.push(`Baris ${index + 2}: Nama Lengkap tidak boleh kosong.`);
+                       }
+                       
+                       if (row["Tanggal Lahir"]) {
+                            let dateObj;
+                            if(row["Tanggal Lahir"] instanceof Date) {
+                                dateObj = row["Tanggal Lahir"];
+                            } else {
+                                dateObj = new Date(row["Tanggal Lahir"]);
+                            }
+                            
+                            if (isNaN(dateObj.getTime())) {
+                                const dateStr = String(row["Tanggal Lahir"]);
+                                // Attempt to re-parse if it was a string that failed
+                                dateObj = new Date(dateStr);
+                            }
+
+                            if (isNaN(dateObj.getTime())) {
+                                errors.push(`Baris ${index + 2}: Format Tanggal Lahir tidak valid untuk "${row["Tanggal Lahir"]}".`);
+                            } else {
+                                row["Tanggal Lahir"] = dateObj;
+                            }
+                       } else {
+                            row["Tanggal Lahir"] = null; // Explicitly set to null if empty
+                       }
+                       
+                       return row;
+                    });
+
+                    if (errors.length > 0) {
+                        setValidationErrors(errors.slice(0, 10));
+                        toast({ variant: "destructive", title: "Validasi Gagal", description: `Ditemukan ${errors.length} kesalahan.` });
+                    } else {
+                        toast({ title: "Validasi Berhasil", description: `Semua ${processedData.length} baris data valid dan siap diimpor.` });
+                        setValidatedData(processedData);
+                    }
+
+                } catch (error: any) {
+                    setValidationErrors([`Gagal memproses file Excel: ${error.message}`]);
+                } finally {
+                    setIsValidating(false);
                 }
-
-            } catch (error: any) {
-                setValidationErrors([`Gagal memproses file Excel: ${error.message}`]);
-            } finally {
-                setIsValidating(false);
-            }
-        };
-        reader.readAsArrayBuffer(file);
+            };
+            reader.readAsArrayBuffer(file);
+        } catch (dbError: any) {
+             toast({ variant: "destructive", title: "Gagal Validasi", description: `Tidak dapat mengambil data siswa yang ada: ${dbError.message}` });
+             setIsValidating(false);
+        }
     };
 
     const handleImport = async () => {
@@ -232,7 +281,7 @@ export function StudentImportDialog({ isOpen, onOpenChange, schoolId }: StudentI
                 
                     {validationErrors.length > 0 && (
                         <div className="p-3 rounded-md bg-destructive/10 text-destructive text-sm space-y-1">
-                            <p className="font-semibold">Ditemukan {validationErrors.length + (validationErrors.length > 5 ? "+" : "")} Kesalahan Validasi:</p>
+                            <p className="font-semibold">Ditemukan {validationErrors.length > 10 ? "10+" : validationErrors.length} Kesalahan Validasi:</p>
                             <ul className="list-disc list-inside">
                                 {validationErrors.map((error, i) => <li key={i}>{error}</li>)}
                             </ul>
