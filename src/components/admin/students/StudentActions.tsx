@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { MoreHorizontal, Loader2 } from "lucide-react";
 import type { Student } from "@/lib/types";
 import { Button } from "@/components/ui/button";
@@ -13,13 +14,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -29,7 +23,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { StudentForm } from "./StudentForm";
 import { useToast } from "@/hooks/use-toast";
 import { doc, writeBatch, increment } from "firebase/firestore";
 import { db } from "@/lib/firebase";
@@ -40,7 +33,6 @@ interface StudentActionsProps {
 }
 
 export function StudentActions({ student }: StudentActionsProps) {
-  const [isEditDialogOpen, setEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const { toast } = useToast();
@@ -75,22 +67,6 @@ export function StudentActions({ student }: StudentActionsProps) {
 
   return (
     <>
-      <Dialog open={isEditDialogOpen} onOpenChange={setEditDialogOpen}>
-        <DialogContent className="sm:max-w-3xl flex flex-col max-h-[90vh]">
-          <DialogHeader>
-            <DialogTitle>Edit Siswa</DialogTitle>
-            <DialogDescription>
-              Ubah detail siswa. Klik simpan jika sudah selesai.
-            </DialogDescription>
-          </DialogHeader>
-          <StudentForm
-            student={student}
-            schoolId={student.schoolId}
-            onFinished={() => setEditDialogOpen(false)}
-          />
-        </DialogContent>
-      </Dialog>
-
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -119,8 +95,10 @@ export function StudentActions({ student }: StudentActionsProps) {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Aksi</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => setEditDialogOpen(true)}>
-            Edit Siswa
+          <DropdownMenuItem asChild>
+            <Link href={`/admin/schools/${student.schoolId}/students/${student.id}/edit`}>
+              Edit Siswa
+            </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem

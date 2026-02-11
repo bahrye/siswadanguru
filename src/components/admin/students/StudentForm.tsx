@@ -100,127 +100,101 @@ export function StudentForm({ student, schoolId, onFinished }: StudentFormProps)
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col flex-1 overflow-hidden">
-        <div className="flex-1 overflow-y-auto space-y-4 pr-4">
-            <FormField control={form.control} name="name" render={({ field }) => (
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormField control={form.control} name="name" render={({ field }) => (
+            <FormItem>
+            <FormLabel>Nama Lengkap</FormLabel>
+            <FormControl><Input {...field} disabled={isSubmitting} /></FormControl>
+            <FormMessage />
+            </FormItem>
+        )} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormField control={form.control} name="nisn" render={({ field }) => (
                 <FormItem>
-                <FormLabel>Nama Lengkap</FormLabel>
-                <FormControl><Input {...field} disabled={isSubmitting} /></FormControl>
-                <FormMessage />
+                    <FormLabel>NISN</FormLabel>
+                    <FormControl><Input {...field} disabled={isSubmitting} /></FormControl>
+                    <FormMessage />
                 </FormItem>
             )} />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField control={form.control} name="nisn" render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>NISN</FormLabel>
-                        <FormControl><Input {...field} disabled={isSubmitting} /></FormControl>
-                        <FormMessage />
-                    </FormItem>
-                )} />
-                <FormField control={form.control} name="nik" render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>NIK</FormLabel>
-                        <FormControl><Input {...field} disabled={isSubmitting} /></FormControl>
-                        <FormMessage />
-                    </FormItem>
-                )} />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField control={form.control} name="birthPlace" render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Tempat Lahir</FormLabel>
-                        <FormControl><Input {...field} disabled={isSubmitting} /></FormControl>
-                        <FormMessage />
-                    </FormItem>
-                )} />
-                <FormField control={form.control} name="dateOfBirth" render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                    <FormLabel>Tanggal Lahir</FormLabel>
-                    <Popover>
-                        <PopoverTrigger asChild>
-                        <FormControl>
-                            <Button
-                            variant={"outline"}
-                            className={cn(
-                                "w-full pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground"
-                            )} disabled={isSubmitting}>
-                            {field.value ? (
-                                format(field.value, "PPP", { locale: id })
-                            ) : (
-                                <span>Pilih tanggal</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                        </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            disabled={(date) =>
-                            date > new Date() || date < new Date("1900-01-01")
-                            }
-                            initialFocus
-                        />
-                        </PopoverContent>
-                    </Popover>
+            <FormField control={form.control} name="nik" render={({ field }) => (
+                <FormItem>
+                    <FormLabel>NIK</FormLabel>
+                    <FormControl><Input {...field} disabled={isSubmitting} /></FormControl>
                     <FormMessage />
-                    </FormItem>
-                )}
-                />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField control={form.control} name="class" render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Tingkat - Rombel</FormLabel>
-                        <FormControl><Input placeholder="contoh: X - A" {...field} disabled={isSubmitting} /></FormControl>
-                        <FormMessage />
-                    </FormItem>
-                )} />
-                <FormField control={form.control} name="status" render={({ field }) => (
-                    <FormItem className="space-y-3">
-                    <FormLabel>Status</FormLabel>
+                </FormItem>
+            )} />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormField control={form.control} name="birthPlace" render={({ field }) => (
+                <FormItem>
+                    <FormLabel>Tempat Lahir</FormLabel>
+                    <FormControl><Input {...field} disabled={isSubmitting} /></FormControl>
+                    <FormMessage />
+                </FormItem>
+            )} />
+            <FormField control={form.control} name="dateOfBirth" render={({ field }) => (
+                <FormItem className="flex flex-col">
+                <FormLabel>Tanggal Lahir</FormLabel>
+                <Popover>
+                    <PopoverTrigger asChild>
                     <FormControl>
-                        <RadioGroup
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        className="flex space-x-4"
-                        disabled={isSubmitting}
-                        >
-                        <FormItem className="flex items-center space-x-2">
-                            <FormControl><RadioGroupItem value="Aktif" /></FormControl>
-                            <FormLabel className="font-normal">Aktif</FormLabel>
-                        </FormItem>
-                        <FormItem className="flex items-center space-x-2">
-                            <FormControl><RadioGroupItem value="Tidak Aktif" /></FormControl>
-                            <FormLabel className="font-normal">Tidak Aktif</FormLabel>
-                        </FormItem>
-                        </RadioGroup>
+                        <Button
+                        variant={"outline"}
+                        className={cn(
+                            "w-full pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                        )} disabled={isSubmitting}>
+                        {field.value ? (
+                            format(field.value, "PPP", { locale: id })
+                        ) : (
+                            <span>Pilih tanggal</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
                     </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) =>
+                        date > new Date() || date < new Date("1900-01-01")
+                        }
+                        initialFocus
+                    />
+                    </PopoverContent>
+                </Popover>
+                <FormMessage />
+                </FormItem>
+            )}
+            />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormField control={form.control} name="class" render={({ field }) => (
+                <FormItem>
+                    <FormLabel>Tingkat - Rombel</FormLabel>
+                    <FormControl><Input placeholder="contoh: X - A" {...field} disabled={isSubmitting} /></FormControl>
                     <FormMessage />
-                    </FormItem>
-                )}
-                />
-            </div>
-            <FormField control={form.control} name="gender" render={({ field }) => (
+                </FormItem>
+            )} />
+            <FormField control={form.control} name="status" render={({ field }) => (
                 <FormItem className="space-y-3">
-                <FormLabel>Jenis Kelamin</FormLabel>
+                <FormLabel>Status</FormLabel>
                 <FormControl>
                     <RadioGroup
                     onValueChange={field.onChange}
                     defaultValue={field.value}
-                    className="flex space-x-4"
+                    className="flex space-x-4 pt-2"
                     disabled={isSubmitting}
                     >
                     <FormItem className="flex items-center space-x-2">
-                        <FormControl><RadioGroupItem value="Laki-laki" /></FormControl>
-                        <FormLabel className="font-normal">Laki-laki</FormLabel>
+                        <FormControl><RadioGroupItem value="Aktif" /></FormControl>
+                        <FormLabel className="font-normal">Aktif</FormLabel>
                     </FormItem>
                     <FormItem className="flex items-center space-x-2">
-                        <FormControl><RadioGroupItem value="Perempuan" /></FormControl>
-                        <FormLabel className="font-normal">Perempuan</FormLabel>
+                        <FormControl><RadioGroupItem value="Tidak Aktif" /></FormControl>
+                        <FormLabel className="font-normal">Tidak Aktif</FormLabel>
                     </FormItem>
                     </RadioGroup>
                 </FormControl>
@@ -228,66 +202,90 @@ export function StudentForm({ student, schoolId, onFinished }: StudentFormProps)
                 </FormItem>
             )}
             />
-            <FormField control={form.control} name="address" render={({ field }) => (
-                <FormItem>
-                    <FormLabel>Alamat</FormLabel>
-                    <FormControl><Textarea {...field} disabled={isSubmitting} /></FormControl>
-                    <FormMessage />
+        </div>
+        <FormField control={form.control} name="gender" render={({ field }) => (
+            <FormItem className="space-y-3">
+            <FormLabel>Jenis Kelamin</FormLabel>
+            <FormControl>
+                <RadioGroup
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                className="flex space-x-4 pt-2"
+                disabled={isSubmitting}
+                >
+                <FormItem className="flex items-center space-x-2">
+                    <FormControl><RadioGroupItem value="Laki-laki" /></FormControl>
+                    <FormLabel className="font-normal">Laki-laki</FormLabel>
                 </FormItem>
-            )} />
-            <FormField control={form.control} name="phone" render={({ field }) => (
+                <FormItem className="flex items-center space-x-2">
+                    <FormControl><RadioGroupItem value="Perempuan" /></FormControl>
+                    <FormLabel className="font-normal">Perempuan</FormLabel>
+                </FormItem>
+                </RadioGroup>
+            </FormControl>
+            <FormMessage />
+            </FormItem>
+        )}
+        />
+        <FormField control={form.control} name="address" render={({ field }) => (
+            <FormItem>
+                <FormLabel>Alamat</FormLabel>
+                <FormControl><Textarea {...field} disabled={isSubmitting} /></FormControl>
+                <FormMessage />
+            </FormItem>
+        )} />
+        <FormField control={form.control} name="phone" render={({ field }) => (
+            <FormItem>
+                <FormLabel>No. Telepon</FormLabel>
+                <FormControl><Input {...field} disabled={isSubmitting} /></FormControl>
+                <FormMessage />
+            </FormItem>
+        )} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormField control={form.control} name="specialNeeds" render={({ field }) => (
                 <FormItem>
-                    <FormLabel>No. Telepon</FormLabel>
+                    <FormLabel>Kebutuhan Khusus</FormLabel>
                     <FormControl><Input {...field} disabled={isSubmitting} /></FormControl>
                     <FormMessage />
                 </FormItem>
             )} />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField control={form.control} name="specialNeeds" render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Kebutuhan Khusus</FormLabel>
-                        <FormControl><Input {...field} disabled={isSubmitting} /></FormControl>
-                        <FormMessage />
-                    </FormItem>
-                )} />
-                <FormField control={form.control} name="disability" render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Disabilitas</FormLabel>
-                        <FormControl><Input {...field} disabled={isSubmitting} /></FormControl>
-                        <FormMessage />
-                    </FormItem>
-                )} />
-            </div>
-            <FormField control={form.control} name="kipPipNumber" render={({ field }) => (
+            <FormField control={form.control} name="disability" render={({ field }) => (
                 <FormItem>
-                    <FormLabel>Nomor KIP/PIP</FormLabel>
-                    <FormControl><Input {...field} disabled={isSubmitting} /></FormControl>
-                    <FormMessage />
-                </FormItem>
-            )} />
-            <FormField control={form.control} name="fatherName" render={({ field }) => (
-                <FormItem>
-                    <FormLabel>Nama Ayah Kandung</FormLabel>
-                    <FormControl><Input {...field} disabled={isSubmitting} /></FormControl>
-                    <FormMessage />
-                </FormItem>
-            )} />
-            <FormField control={form.control} name="motherName" render={({ field }) => (
-                <FormItem>
-                    <FormLabel>Nama Ibu Kandung</FormLabel>
-                    <FormControl><Input {...field} disabled={isSubmitting} /></FormControl>
-                    <FormMessage />
-                </FormItem>
-            )} />
-            <FormField control={form.control} name="guardianName" render={({ field }) => (
-                <FormItem>
-                    <FormLabel>Nama Wali</FormLabel>
+                    <FormLabel>Disabilitas</FormLabel>
                     <FormControl><Input {...field} disabled={isSubmitting} /></FormControl>
                     <FormMessage />
                 </FormItem>
             )} />
         </div>
-        <div className="flex justify-end pt-4 mt-auto">
+        <FormField control={form.control} name="kipPipNumber" render={({ field }) => (
+            <FormItem>
+                <FormLabel>Nomor KIP/PIP</FormLabel>
+                <FormControl><Input {...field} disabled={isSubmitting} /></FormControl>
+                <FormMessage />
+            </FormItem>
+        )} />
+        <FormField control={form.control} name="fatherName" render={({ field }) => (
+            <FormItem>
+                <FormLabel>Nama Ayah Kandung</FormLabel>
+                <FormControl><Input {...field} disabled={isSubmitting} /></FormControl>
+                <FormMessage />
+            </FormItem>
+        )} />
+        <FormField control={form.control} name="motherName" render={({ field }) => (
+            <FormItem>
+                <FormLabel>Nama Ibu Kandung</FormLabel>
+                <FormControl><Input {...field} disabled={isSubmitting} /></FormControl>
+                <FormMessage />
+            </FormItem>
+        )} />
+        <FormField control={form.control} name="guardianName" render={({ field }) => (
+            <FormItem>
+                <FormLabel>Nama Wali</FormLabel>
+                <FormControl><Input {...field} disabled={isSubmitting} /></FormControl>
+                <FormMessage />
+            </FormItem>
+        )} />
+        <div className="flex justify-end pt-4">
           <Button type="submit" disabled={isSubmitting}>
             {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {isSubmitting ? "Menyimpan..." : "Simpan"}
