@@ -3,13 +3,13 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "AIzaSyDwCNPaoBNz20dX4huA1Ad9y-BNtief1JE",
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "lpj-dana-bos.firebaseapp.com",
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "lpj-dana-bos",
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "lpj-dana-bos.appspot.com",
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "1024612188887",
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "1:1024612188887:web:8cafa13e5781ae426fa692",
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || "G-1FGTRSGM9X"
+  apiKey: "AIzaSyD-5skVZN5Xz1X-nnQdRMV03zdQwsZ7In8",
+  authDomain: "aplikasi-ijazah.firebaseapp.com",
+  projectId: "aplikasi-ijazah",
+  storageBucket: "aplikasi-ijazah.firebasestorage.app",
+  messagingSenderId: "309441136003",
+  appId: "1:309441136003:web:2707742038f3a884cb62b6",
+  measurementId: "G-R7H1EM9FT1"
 };
 
 // Initialize Firebase
