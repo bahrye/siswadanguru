@@ -3,9 +3,22 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
+import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { Skeleton } from '@/components/ui/skeleton';
+import { BookOpenCheck } from 'lucide-react';
+
+const AdminMobileHeader = () => (
+    <header className="sticky top-0 z-40 flex h-14 items-center justify-between gap-4 border-b bg-background px-4 md:hidden">
+        <div className="flex items-center gap-2">
+          <BookOpenCheck className="h-7 w-7 text-primary" />
+          <span className="font-headline text-xl font-bold tracking-tight">
+            EduCloud
+          </span>
+        </div>
+        <SidebarTrigger />
+    </header>
+);
 
 export default function AdminLayout({
   children,
@@ -45,6 +58,7 @@ export default function AdminLayout({
     <SidebarProvider>
       <AdminSidebar />
       <SidebarInset>
+        <AdminMobileHeader />
         {children}
       </SidebarInset>
     </SidebarProvider>

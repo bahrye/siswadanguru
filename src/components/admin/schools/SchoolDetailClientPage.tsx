@@ -108,7 +108,7 @@ export function SchoolDetailClientPage({ schoolId }: { schoolId: string }) {
                     <span className="sr-only">Kembali</span>
                 </Button>
                 <div>
-                    <h2 className="text-2xl font-bold tracking-tight font-headline md:text-3xl">{school.name}</h2>
+                    <h2 className="text-2xl font-bold tracking-tight font-headline md:text-3xl break-words">{school.name}</h2>
                     <p className="text-muted-foreground flex items-center gap-2">
                         <MapPin className="w-4 h-4"/> {school.address}
                     </p>
@@ -158,7 +158,7 @@ export function SchoolDetailClientPage({ schoolId }: { schoolId: string }) {
                                     Tambah, edit, atau hapus data siswa untuk sekolah ini.
                                 </CardDescription>
                              </div>
-                             <div className="flex w-full md:w-auto gap-2">
+                             <div className="flex flex-wrap w-full md:w-auto gap-2">
                                 <Dialog open={isAddStudentOpen} onOpenChange={setAddStudentOpen}>
                                     <DialogTrigger asChild>
                                         <Button className="w-full sm:w-auto">

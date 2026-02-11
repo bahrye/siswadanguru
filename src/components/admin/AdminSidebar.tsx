@@ -65,7 +65,7 @@ export function AdminSidebar() {
         <div className="flex items-center gap-2 p-2">
           <BookOpenCheck className="size-6 shrink-0 text-primary" />
           <span className="font-headline text-lg font-semibold truncate">EduCloud</span>
-          <SidebarTrigger className="ml-auto" />
+          <SidebarTrigger className="ml-auto hidden md:flex" />
         </div>
       </SidebarHeader>
       <SidebarContent>
