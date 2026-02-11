@@ -14,6 +14,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { mockStudents, mockTeachers } from "@/lib/mock-data";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
+import { StudentImportDialog } from "@/components/admin/students/StudentImportDialog";
 
 
 export function SchoolDetailClientPage({ schoolId }: { schoolId: string }) {
@@ -21,6 +22,7 @@ export function SchoolDetailClientPage({ schoolId }: { schoolId: string }) {
     const [students, setStudents] = useState<Student[]>([]);
     const [teachers, setTeachers] = useState<Teacher[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isImportOpen, setImportOpen] = useState(false);
     const router = useRouter();
 
     useEffect(() => {
@@ -137,7 +139,7 @@ export function SchoolDetailClientPage({ schoolId }: { schoolId: string }) {
                                     <PlusCircle className="mr-2 h-4 w-4" />
                                     Tambah Siswa
                                 </Button>
-                                <Button variant="outline" className="w-full sm:w-auto">
+                                <Button variant="outline" className="w-full sm:w-auto" onClick={() => setImportOpen(true)}>
                                     <Upload className="mr-2 h-4 w-4" />
                                     Import
                                 </Button>
@@ -166,6 +168,7 @@ export function SchoolDetailClientPage({ schoolId }: { schoolId: string }) {
                     </Card>
                 </TabsContent>
             </Tabs>
+            <StudentImportDialog isOpen={isImportOpen} onOpenChange={setImportOpen} schoolId={schoolId} />
         </div>
     )
 }
