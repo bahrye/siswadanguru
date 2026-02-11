@@ -57,7 +57,7 @@ export default function AdminLayout({
   return (
     <SidebarProvider>
       <AdminSidebar />
-      <SidebarInset>
+      <SidebarInset className="min-w-0">
         <AdminMobileHeader />
         {children}
       </SidebarInset>
