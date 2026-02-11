@@ -66,12 +66,12 @@ export function StudentImportDialog({ isOpen, onOpenChange, schoolId }: StudentI
         try {
             const studentsRef = collection(db, 'schools', schoolId, 'students');
             const querySnapshot = await getDocs(studentsRef);
-            const existingNisns = new Set<string>();
-            const existingNiks = new Set<string>();
+            const existingNisns = new Map<string, string>(); // NISN -> name
+            const existingNiks = new Map<string, string>(); // NIK -> name
             querySnapshot.forEach(doc => {
                 const data = doc.data();
-                if (data.nisn) existingNisns.add(data.nisn);
-                if (data.nik) existingNiks.add(data.nik);
+                if (data.nisn) existingNisns.set(data.nisn, data.name);
+                if (data.nik) existingNiks.set(data.nik, data.name);
             });
 
             const reader = new FileReader();
@@ -96,10 +96,13 @@ export function StudentImportDialog({ isOpen, onOpenChange, schoolId }: StudentI
                     
                     const dataAsObjects = XLSX.utils.sheet_to_json(worksheet, {raw: false});
                     const errors: string[] = [];
-                    const nisnsInFile = new Set<string>();
-                    const niksInFile = new Set<string>();
+                    const nisnsInFile = new Map<string, { name: string, row: number }>();
+                    const niksInFile = new Map<string, { name: string, row: number }>();
 
                     const processedData = dataAsObjects.map((row: any, index) => {
+                       const rowNum = index + 2;
+                       const studentName = row["Nama Lengkap"] || 'Nama Kosong';
+
                        // NIK cleaning and validation
                        if (row["NIK"]) {
                            let nik = String(row["NIK"]);
@@ -110,11 +113,12 @@ export function StudentImportDialog({ isOpen, onOpenChange, schoolId }: StudentI
 
                            if (nik) {
                                if(existingNiks.has(nik)) {
-                                   errors.push(`Baris ${index + 2}: NIK ${nik} sudah terdaftar.`);
+                                   errors.push(`Baris ${rowNum} (${studentName}): NIK ${nik} sudah terdaftar atas nama ${existingNiks.get(nik)}.`);
                                } else if (niksInFile.has(nik)) {
-                                   errors.push(`Baris ${index + 2}: NIK ${nik} duplikat di dalam file ini.`);
+                                   const original = niksInFile.get(nik)!;
+                                   errors.push(`Baris ${rowNum} (${studentName}): NIK ${nik} duplikat dengan baris ${original.row} (${original.name}).`);
                                } else {
-                                   niksInFile.add(nik);
+                                   niksInFile.set(nik, { name: studentName, row: rowNum });
                                }
                            }
                         }
@@ -123,17 +127,18 @@ export function StudentImportDialog({ isOpen, onOpenChange, schoolId }: StudentI
                        const nisn = row["NISN"] ? String(row["NISN"]) : '';
                        if (nisn) {
                            if(existingNisns.has(nisn)) {
-                               errors.push(`Baris ${index + 2}: NISN ${nisn} sudah terdaftar.`);
+                               errors.push(`Baris ${rowNum} (${studentName}): NISN ${nisn} sudah terdaftar atas nama ${existingNisns.get(nisn)}.`);
                            } else if (nisnsInFile.has(nisn)) {
-                               errors.push(`Baris ${index + 2}: NISN ${nisn} duplikat di dalam file ini.`);
+                               const original = nisnsInFile.get(nisn)!;
+                               errors.push(`Baris ${rowNum} (${studentName}): NISN ${nisn} duplikat dengan baris ${original.row} (${original.name}).`);
                            } else {
-                               nisnsInFile.add(nisn);
+                               nisnsInFile.set(nisn, { name: studentName, row: rowNum });
                            }
                        }
 
 
                        if (!row["Nama Lengkap"]) {
-                           errors.push(`Baris ${index + 2}: Nama Lengkap tidak boleh kosong.`);
+                           errors.push(`Baris ${rowNum}: Nama Lengkap tidak boleh kosong.`);
                        }
                        
                        if (row["Tanggal Lahir"]) {
@@ -151,7 +156,7 @@ export function StudentImportDialog({ isOpen, onOpenChange, schoolId }: StudentI
                             }
 
                             if (isNaN(dateObj.getTime())) {
-                                errors.push(`Baris ${index + 2}: Format Tanggal Lahir tidak valid untuk "${row["Tanggal Lahir"]}".`);
+                                errors.push(`Baris ${rowNum}: Format Tanggal Lahir tidak valid untuk "${row["Tanggal Lahir"]}".`);
                             } else {
                                 row["Tanggal Lahir"] = dateObj;
                             }
@@ -305,3 +310,5 @@ export function StudentImportDialog({ isOpen, onOpenChange, schoolId }: StudentI
         </Dialog>
     );
 }
+
+    
