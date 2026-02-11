@@ -264,7 +264,7 @@ export function StudentImportDialog({ isOpen, onOpenChange, schoolId }: StudentI
                         Ikuti langkah-langkah berikut untuk mengimpor data siswa secara massal.
                     </DialogDescription>
                 </DialogHeader>
-                 <div className="space-y-6 py-4 text-sm">
+                 <div className="space-y-6 py-4 pr-4 text-sm max-h-[60vh] overflow-y-auto">
                     <div className="space-y-2">
                         <p className="font-medium">Langkah 1: Unduh dan Isi Template</p>
                         <p className="text-xs text-muted-foreground">
@@ -310,5 +310,3 @@ export function StudentImportDialog({ isOpen, onOpenChange, schoolId }: StudentI
         </Dialog>
     );
 }
-
-    
