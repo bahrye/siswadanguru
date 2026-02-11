@@ -10,9 +10,9 @@ export default function LoginPage() {
             <Link href="/" className="flex items-center gap-2 mb-6">
                 <BookOpenCheck className="h-10 w-10 text-primary" />
             </Link>
-            <h1 className="text-3xl font-bold font-headline">Login Admin</h1>
+            <h1 className="text-3xl font-bold font-headline">Akun Admin</h1>
             <p className="text-muted-foreground">
-                Akses dasbor Manajer EduCloud Anda.
+                Masuk atau buat akun untuk mengakses dasbor admin.
             </p>
         </div>
         <LoginForm />
