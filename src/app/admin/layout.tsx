@@ -9,14 +9,14 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { BookOpenCheck } from 'lucide-react';
 
 const AdminMobileHeader = () => (
-    <header className="sticky top-0 z-40 flex h-14 items-center justify-between gap-4 border-b bg-background px-4 md:hidden">
+    <header className="sticky top-0 z-40 flex h-14 items-center gap-4 border-b bg-background px-4 md:hidden">
+        <SidebarTrigger />
         <div className="flex items-center gap-2">
           <BookOpenCheck className="h-7 w-7 text-primary" />
           <span className="font-headline text-xl font-bold tracking-tight">
             EduCloud
           </span>
         </div>
-        <SidebarTrigger />
     </header>
 );
 
