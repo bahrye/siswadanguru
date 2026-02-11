@@ -44,7 +44,6 @@ export function StudentImportDialog({ isOpen, onOpenChange, schoolId }: StudentI
         const url = URL.createObjectURL(blob);
         link.setAttribute("href", url);
         link.setAttribute("download", "template_import_siswa.csv");
-        link.style.visibility = "hidden";
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -72,10 +71,13 @@ export function StudentImportDialog({ isOpen, onOpenChange, schoolId }: StudentI
                 }
                 
                 const errors: string[] = [];
-                const data = results.data;
+                const data = results.data as any[];
 
                 // Placeholder for detailed validation logic based on your rules.
                 data.forEach((row: any, index) => {
+                   if (row["NIK"] && typeof row["NIK"] === 'string' && row["NIK"].startsWith("'")) {
+                       row["NIK"] = row["NIK"].substring(1);
+                   }
                    if (!row["Nama Lengkap"]) {
                        errors.push(`Baris ${index + 2}: Nama Lengkap tidak boleh kosong.`);
                    }
@@ -137,20 +139,35 @@ export function StudentImportDialog({ isOpen, onOpenChange, schoolId }: StudentI
         }}>
             <DialogContent className="sm:max-w-lg">
                 <DialogHeader>
-                    <DialogTitle>Import Data Siswa</DialogTitle>
+                    <DialogTitle>Import Data Siswa dari Excel/CSV</DialogTitle>
                     <DialogDescription>
-                        Unggah file CSV untuk mengimpor data siswa secara massal. Pastikan file sesuai dengan template.
+                        Ikuti langkah-langkah berikut untuk mengimpor data siswa secara massal.
                     </DialogDescription>
                 </DialogHeader>
-                <div className="space-y-4 py-4">
-                    <Button variant="outline" onClick={downloadTemplate} className="w-full">
-                        <FileDown className="mr-2 h-4 w-4" />
-                        Unduh Template CSV
-                    </Button>
+                 <div className="space-y-6 py-4 text-sm">
                     <div className="space-y-2">
-                        <label htmlFor="file-upload" className="text-sm font-medium">Langkah 2: Unggah File</label>
+                        <p className="font-medium">Langkah 1: Unduh dan Isi Template</p>
+                        <p className="text-xs text-muted-foreground">
+                            Unduh template, lalu buka dan isi data siswa menggunakan Microsoft Excel atau aplikasi spreadsheet lainnya.
+                        </p>
+                        <Button variant="outline" onClick={downloadTemplate} className="w-full">
+                            <FileDown className="mr-2 h-4 w-4" />
+                            Unduh Template Import
+                        </Button>
+                    </div>
+
+                    <div className="space-y-2">
+                        <p className="font-medium">Langkah 2: Simpan sebagai CSV</p>
+                        <p className="text-xs text-muted-foreground">
+                            Setelah selesai, pastikan Anda menyimpan file sebagai <span className="font-semibold text-foreground">CSV (Comma delimited)</span>. Di Excel, gunakan menu `File &gt; Save As`.
+                        </p>
+                    </div>
+
+                    <div className="space-y-2">
+                        <p className="font-medium">Langkah 3: Unggah File CSV</p>
                         <Input id="file-upload" type="file" accept=".csv" onChange={handleFileChange} className="file:text-foreground"/>
                     </div>
+                
                     {validationErrors.length > 0 && (
                         <div className="p-3 rounded-md bg-destructive/10 text-destructive text-sm space-y-1">
                             <p className="font-semibold">Ditemukan {validationErrors.length} Kesalahan Validasi:</p>
@@ -166,11 +183,11 @@ export function StudentImportDialog({ isOpen, onOpenChange, schoolId }: StudentI
                     <div className="flex gap-2 justify-end">
                         <Button onClick={handleValidate} disabled={!file || isValidating || isImporting}>
                             {isValidating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                            Validasi
+                            Validasi File
                         </Button>
                         <Button onClick={handleImport} disabled={validatedData.length === 0 || isImporting}>
                             {isImporting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                            Import
+                            Import Data
                         </Button>
                     </div>
                 </DialogFooter>
