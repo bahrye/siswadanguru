@@ -2,18 +2,12 @@
 
 import type { Student } from "@/lib/types";
 import { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal, ArrowUpDown } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
+import { StudentActions } from "./StudentActions";
 
 export const columns: ColumnDef<Student>[] = [
   {
@@ -52,7 +46,11 @@ export const columns: ColumnDef<Student>[] = [
     header: "Tanggal Lahir",
     cell: ({ row }) => {
         try {
-            const date = new Date(row.getValue("dateOfBirth"));
+            const dateStr = row.getValue("dateOfBirth") as string;
+            if (!dateStr) {
+                 return <span className="text-muted-foreground text-xs">N/A</span>;
+            }
+            const date = new Date(dateStr);
             if (isNaN(date.getTime())) {
                 return <span className="text-destructive text-xs">Tanggal tidak valid</span>;
             }
@@ -66,31 +64,7 @@ export const columns: ColumnDef<Student>[] = [
     id: "actions",
     cell: ({ row }) => {
       const student = row.original;
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Buka menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Aksi</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => alert(`Mengedit ${student.name}`)}
-            >
-              Edit Siswa
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="text-destructive focus:text-destructive"
-              onClick={() => alert(`Menghapus ${student.name}`)}
-            >
-              Hapus Siswa
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+      return <StudentActions student={student} />;
     },
   },
 ];

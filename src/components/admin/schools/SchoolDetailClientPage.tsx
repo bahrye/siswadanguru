@@ -17,6 +17,8 @@ import { Button } from "@/components/ui/button";
 import { StudentImportDialog } from "@/components/admin/students/StudentImportDialog";
 import { useToast } from "@/hooks/use-toast";
 import { StudentExportDialog } from "@/components/admin/students/StudentExportDialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { StudentForm } from "@/components/admin/students/StudentForm";
 
 
 export function SchoolDetailClientPage({ schoolId }: { schoolId: string }) {
@@ -26,6 +28,7 @@ export function SchoolDetailClientPage({ schoolId }: { schoolId: string }) {
     const [loading, setLoading] = useState(true);
     const [isImportOpen, setImportOpen] = useState(false);
     const [isExportOpen, setExportOpen] = useState(false);
+    const [isAddStudentOpen, setAddStudentOpen] = useState(false);
     const router = useRouter();
     const { toast } = useToast();
 
@@ -156,10 +159,23 @@ export function SchoolDetailClientPage({ schoolId }: { schoolId: string }) {
                                 </CardDescription>
                              </div>
                              <div className="flex w-full md:w-auto gap-2">
-                                <Button className="w-full sm:w-auto">
-                                    <PlusCircle className="mr-2 h-4 w-4" />
-                                    Tambah Siswa
-                                </Button>
+                                <Dialog open={isAddStudentOpen} onOpenChange={setAddStudentOpen}>
+                                    <DialogTrigger asChild>
+                                        <Button className="w-full sm:w-auto">
+                                            <PlusCircle className="mr-2 h-4 w-4" />
+                                            Tambah Siswa
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="sm:max-w-3xl">
+                                        <DialogHeader>
+                                            <DialogTitle>Tambah Siswa Baru</DialogTitle>
+                                            <DialogDescription>
+                                                Masukkan detail siswa baru. Klik simpan jika sudah selesai.
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <StudentForm schoolId={schoolId} onFinished={() => setAddStudentOpen(false)} />
+                                    </DialogContent>
+                                </Dialog>
                                 <Button variant="outline" className="w-full sm:w-auto" onClick={() => setImportOpen(true)}>
                                     <Upload className="mr-2 h-4 w-4" />
                                     Import
